@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "esModuleInterop": true,
+        "strict": true,
+        "moduleResolution": "Node",
+        "noEmit": true,
+
+        "outDir": "dist",
+
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
+        "noUncheckedIndexedAccess": true,
+        "noImplicitAny": true,
+
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["backend/src/*"]
+        }
+    },
+    "tsc-alias": {
+        "resolveFullPaths": true,
+        "verbose": false
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "dist", "docs"]
+}

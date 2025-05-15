@@ -1,0 +1,14 @@
+{
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint"],
+    "extends": ["plugin:@typescript-eslint/recommended"],
+    "parserOptions": {
+        "project": "./tsconfig.json",
+        "tsconfigRootDir": "."
+    },
+    "env": {
+        "node": true,
+        "es2022": true
+    }
+}
