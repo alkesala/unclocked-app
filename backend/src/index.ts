@@ -4,7 +4,7 @@ import { requestLogger } from "./middleware/requestLogger";
 import http from "http";
 import { statusRouter } from "./modules/status/status.route";
 import { logger } from "./utils/logger";
-import dayjs from "dayjs";
+import { unknownEndpoint } from "./middleware/unknown-endpoint";
 
 dotenv.config();
 const app = express();
@@ -22,7 +22,8 @@ apiRouter.use(statusRouter);
 app.use("/api/v1", apiRouter);
 app.use(express.json());
 
+app.use(unknownEndpoint);
+
 server.listen(PORT, () => {
     logger.info(`Server running on port: ${PORT}`);
-    logger.info(`The Date is: ${dayjs().format("YYYY-MM-DD HH:mm")} `);
 });
