@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import { requestLogger } from "./middleware/requestLogger";
+import { requestLogger } from "./middleware/request-logger";
 import http from "http";
 import { statusRouter } from "./modules/status/status.route";
 import { logger } from "./utils/logger";
