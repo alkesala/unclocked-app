@@ -11,6 +11,13 @@
 
 ### Backend
 
+
+## TimeEntries
+- Admin -create/delete entries
+- User -edit/delete
+- Admin get all/:projectId || get all/:courseId
+
+
 ### Docker
 
 ### MongoDB
