@@ -14,6 +14,7 @@
         "nodemon": "^3.1.10",
         "prettier": "^3.5.3",
         "ts-node": "^10.9.2",
+        "tsconfig-paths": "^4.2.0",
         "typescript": "^5.8.3"
     },
     "dependencies": {
@@ -26,7 +27,7 @@
         "zod": "^3.24.4"
     },
     "scripts": {
-        "dev": "nodemon --exec ts-node src/index.ts",
+        "dev": "nodemon --require tsconfig-paths/register --exec ts-node src/index.ts",
         "build": "tsc",
         "start": "node dist/index.js",
         "lint": "eslint . --ext .ts",

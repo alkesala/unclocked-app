@@ -1,12 +1,12 @@
 import express from "express"
 import dotenv from "dotenv"
-import { requestLogger } from "./middleware/request-logger"
+import { requestLogger } from "@/middleware/request-logger"
 import http from "http"
-import { statusRouter } from "./modules/status/status.route"
-import { logger } from "./utils/logger"
-import { unknownEndpoint } from "./middleware/unknown-endpoint"
-import { connectDB } from "./utils/db"
-import { TimeEntryRouter } from "./modules/timeEntry/timeEntry.route"
+import { statusRouter } from "@/modules/status/status.route"
+import { logger } from "@/utils/logger"
+import { unknownEndpoint } from "@/middleware/unknown-endpoint"
+import { connectDB } from "@/utils/db"
+import { TimeEntryRouter } from "@/modules/timeEntry/timeEntry.route"
 
 dotenv.config()
 const app = express()
