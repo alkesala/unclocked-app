@@ -3,7 +3,7 @@ import { TimeEntryService } from "./timeEntry.service"
 import { StatusCodes } from "http-status-codes"
 import { CreateTimeEntryInput } from "./timeEntry.types"
 import { GetTimeEntryParams } from "./timeEntry.types"
-import { BaseFilterSchema } from "../../types/request-filters"
+import { PaginationQuerySchema } from "../../types/request-filters"
 import { TimeEntryFilterSchema } from "./timeEntry.validator"
 
 const createTimeEntry = async (
@@ -43,7 +43,7 @@ const getAllEntries = async (
     next: NextFunction
 ) => {
     try {
-        const filter = BaseFilterSchema.parse(req.query)
+        const filter = PaginationQuerySchema.parse(req.query)
         const result = await TimeEntryService.getAllEntries(filter)
         res.status(StatusCodes.OK).json(result)
     } catch (err) {

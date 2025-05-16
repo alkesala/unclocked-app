@@ -1,9 +1,9 @@
 import { z } from "zod"
-import { BaseFilterSchema } from "@/types/request-filters"
+import { PaginationQuerySchema } from "@/types/request-filters"
 
 // Pagination included
 const getAllEntriesSchema = z.object({
-    query: BaseFilterSchema.extend({
+    query: PaginationQuerySchema.extend({
         accountId: z.string().optional(),
         project: z.string().optional(),
         course: z.string().optional(),
@@ -29,7 +29,7 @@ const getTimeEntriesSchema = z.object({
     }),
 })
 
-export const TimeEntryFilterSchema = BaseFilterSchema.extend({
+export const TimeEntryFilterSchema = PaginationQuerySchema.extend({
     accountId: z.string().optional(),
     project: z.string().optional(),
     course: z.string().optional(),

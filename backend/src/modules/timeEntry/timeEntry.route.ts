@@ -1,24 +1,24 @@
 import { Router } from "express"
 import { TimeEntryController } from "./timeEntry.controller"
 import validator from "@/middleware/validator"
-import { timeEntryValidator } from "./timeEntry.validator"
+import { TimeEntryValidator } from "./timeEntry.validator"
 
 export const TimeEntryRouter = Router()
 
 TimeEntryRouter.post(
     "/create-entry",
-    validator(timeEntryValidator.createTimeEntrySchema),
+    validator(TimeEntryValidator.createTimeEntrySchema),
     TimeEntryController.createTimeEntry
 )
 
 TimeEntryRouter.get(
     "/get-entry/:accountId",
-    validator(timeEntryValidator.getTimeEntriesSchema),
+    validator(TimeEntryValidator.getTimeEntriesSchema),
     TimeEntryController.getAccountEntries
 )
 
 TimeEntryRouter.get(
     "/get-all",
-    validator(timeEntryValidator.getAllEntriesSchema),
+    validator(TimeEntryValidator.getAllEntriesSchema),
     TimeEntryController.getAllEntries
 )
