@@ -4,7 +4,7 @@ import { StatusCodes } from "http-status-codes"
 import { CreateTimeEntryInput } from "./timeEntry.types"
 import { GetTimeEntryParams } from "./timeEntry.types"
 import { BaseFilterSchema } from "../../types/request-filters"
-import { timeEntryFilterSchema } from "./timeEntry.validator"
+import { TimeEntryFilterSchema } from "./timeEntry.validator"
 
 const createTimeEntry = async (
     req: Request<CreateTimeEntryInput["body"]>,
@@ -26,7 +26,7 @@ const getAccountEntries = async (
     next: NextFunction
 ) => {
     try {
-        const filter = timeEntryFilterSchema.parse({
+        const filter = TimeEntryFilterSchema.parse({
             ...req.query,
             accountId: req.params.accountId,
         })

@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { TimeEntryController } from "./timeEntry.controller"
-import validator from "../../middleware/validator"
+import validator from "@/middleware/validator"
 import { timeEntryValidator } from "./timeEntry.validator"
 
 export const TimeEntryRouter = Router()

@@ -6,7 +6,6 @@ const create = async (input: CreateTimeEntryInput) => {
     return TimeEntryModel.create(input)
 }
 
-// Only for ADMIN
 const getAllEntries = async (filter: BaseFilter) => {
     const { page = 1, limit = 20, ...queryFilters } = filter
     const offset = (page - 1) * limit
