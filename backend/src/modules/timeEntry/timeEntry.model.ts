@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from "mongoose"
 
 const TimeEntrySchema = new Schema(
     {
@@ -10,5 +10,5 @@ const TimeEntrySchema = new Schema(
         note: { type: String },
     },
     { timestamps: true }
-);
-export const TimeEntryModel = model("TimeEntry", TimeEntrySchema);
+)
+export const TimeEntryModel = model("TimeEntry", TimeEntrySchema)

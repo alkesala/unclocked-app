@@ -1,6 +1,6 @@
-import { Response } from "express";
-import { StatusCodes } from "http-status-codes";
+import { Response } from "express"
+import { StatusCodes } from "http-status-codes"
 
 export const unknownEndpoint = (res: Response) => {
-    res.status(StatusCodes.NOT_FOUND);
-};
+    res.status(StatusCodes.NOT_FOUND)
+}

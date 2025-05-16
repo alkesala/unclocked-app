@@ -1,4 +1,4 @@
-import winston from "winston";
+import winston from "winston"
 
 const levels = {
     error: 0,
@@ -6,13 +6,13 @@ const levels = {
     info: 2,
     http: 3,
     debug: 4,
-};
+}
 
 const level = () => {
-    const env = process.env.NODE_ENV || "development";
-    const isDevelopment = env === "development";
-    return isDevelopment ? "debug" : "info";
-};
+    const env = process.env.NODE_ENV || "development"
+    const isDevelopment = env === "development"
+    return isDevelopment ? "debug" : "info"
+}
 
 const colors = {
     error: "red",
@@ -20,27 +20,27 @@ const colors = {
     info: "green",
     http: "magenta",
     debug: "white",
-};
+}
 
-winston.addColors(colors);
+winston.addColors(colors)
 
 const defaultFormat = winston.format.combine(
     winston.format.timestamp({ format: "YYYY-MM-DD HH:mm" }),
     winston.format.printf((info) => {
-        return `${info.timestamp} ${info.level}: ${info.message}`;
+        return `${info.timestamp} ${info.level}: ${info.message}`
     })
-);
+)
 
 const colorizedFormat = winston.format.combine(
     winston.format.timestamp({ format: "YYYY-MM-DD HH:mm" }),
     winston.format.colorize({ all: true }),
     winston.format.printf((info) => {
-        return `${info.timestamp} ${info.level}: ${info.message}`;
+        return `${info.timestamp} ${info.level}: ${info.message}`
     })
-);
+)
 
-const date = new Date();
-const dateString = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+const date = new Date()
+const dateString = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
 const transports = [
     new winston.transports.Console({
         format: colorizedFormat,
@@ -50,10 +50,10 @@ const transports = [
         maxFiles: 2,
         format: defaultFormat,
     }),
-];
+]
 
 export const logger = winston.createLogger({
     level: level(),
     levels,
     transports,
-});
+})

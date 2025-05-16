@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { statusController } from "./status.controller";
+import { Router } from "express"
+import { statusController } from "./status.controller"
 
-export const statusRouter = Router();
+export const statusRouter = Router()
 
-statusRouter.get("/status", statusController.getStatus);
+statusRouter.get("/status", statusController.getStatus)
