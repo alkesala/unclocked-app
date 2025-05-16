@@ -12,3 +12,10 @@ const TimeEntrySchema = new Schema(
     { timestamps: true }
 )
 export const TimeEntryModel = model("TimeEntry", TimeEntrySchema)
+
+TimeEntrySchema.set("toJSON", {
+    transform: (document, returnedObject) => {
+        delete returnedObject._id
+        delete returnedObject.__v
+    },
+})
