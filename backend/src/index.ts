@@ -6,6 +6,7 @@ import { statusRouter } from "./modules/status/status.route"
 import { logger } from "./utils/logger"
 import { unknownEndpoint } from "./middleware/unknown-endpoint"
 import { connectDB } from "./utils/db"
+import { TimeEntryRouter } from "./modules/timeEntry/timeEntry.route"
 
 dotenv.config()
 const app = express()
@@ -22,6 +23,9 @@ const server = http.createServer(app)
 const apiRouter = express.Router()
 
 apiRouter.use(statusRouter)
+
+apiRouter.use("/time", TimeEntryRouter)
+
 app.use("/api/v1", apiRouter)
 
 // fallback for unknown endpoints

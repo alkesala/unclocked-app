@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express"
 import { TimeEntryService } from "./timeEntry.service"
-import { createTimeEntrySchema } from "./timeEntry.validator"
 import { StatusCodes } from "http-status-codes"
+import { CreateTimeEntryInput } from "./timeEntry.types"
 
 const createTimeEntry = async (
     req: Request,
@@ -9,8 +9,8 @@ const createTimeEntry = async (
     next: NextFunction
 ) => {
     try {
-        const parsed = createTimeEntrySchema.parse(req.body)
-        const created = await TimeEntryService.create(parsed)
+        const body = req.body as CreateTimeEntryInput
+        const created = await TimeEntryService.create(body)
         res.status(StatusCodes.CREATED).json(created)
     } catch (err) {
         next(err)
@@ -37,7 +37,7 @@ const getAccountEntries = async (
     }
 }
 
-export const timeEntryController = {
+export const TimeEntryController = {
     createTimeEntry,
     getAccountEntries,
 }
