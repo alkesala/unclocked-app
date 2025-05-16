@@ -6,7 +6,6 @@ const validator = (
     schema: AnyZodObject | ZodEffects<ZodEffects<AnyZodObject>>
 ) => {
     return async (req: Request, res: Response, next: NextFunction) => {
-        console.log("body recv", req.body)
         try {
             const parsed = await schema.parseAsync({
                 body: req.body as unknown,

@@ -8,6 +8,10 @@ export type getTimeEntryParams = z.infer<
     typeof timeEntryValidator.getTimeEntriesSchema
 >
 
+export type getAllEntryQueries = z.infer<
+    typeof timeEntryValidator.getAllEntriesSchema
+>
+
 export type TimeEntry = {
     id: string
     accountId: string

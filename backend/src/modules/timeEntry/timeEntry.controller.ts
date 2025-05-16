@@ -3,6 +3,7 @@ import { TimeEntryService } from "./timeEntry.service"
 import { StatusCodes } from "http-status-codes"
 import { CreateTimeEntryInput } from "./timeEntry.types"
 import { getTimeEntryParams } from "./timeEntry.types"
+import { baseFilterSchema } from "../../types/request-filters"
 
 const createTimeEntry = async (
     req: Request<CreateTimeEntryInput["body"]>,
@@ -32,7 +33,22 @@ const getAccountEntries = async (
     }
 }
 
+const getAllEntries = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const filter = baseFilterSchema.parse(req.query)
+        const entries = await TimeEntryService.getAllEntries(filter)
+        res.status(StatusCodes.OK).json(entries)
+    } catch (err) {
+        next(err)
+    }
+}
+
 export const TimeEntryController = {
     createTimeEntry,
     getAccountEntries,
+    getAllEntries,
 }

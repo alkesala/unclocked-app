@@ -12,7 +12,13 @@ TimeEntryRouter.post(
 )
 
 TimeEntryRouter.get(
-    "/get/:accountId",
+    "/get-entry/:accountId",
     validator(timeEntryValidator.getTimeEntriesSchema),
     TimeEntryController.getAccountEntries
+)
+
+TimeEntryRouter.get(
+    "/get-all",
+    validator(timeEntryValidator.getAllEntriesSchema),
+    TimeEntryController.getAllEntries
 )
