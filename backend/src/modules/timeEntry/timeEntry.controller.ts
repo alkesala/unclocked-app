@@ -20,6 +20,26 @@ const createTimeEntry = async (
     }
 }
 
+const deleteTimeEntry = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction
+) => {
+    const { id } = req.params
+    try {
+        const deleted = await TimeEntryService.deleteById(id)
+        if (!deleted) {
+            res.status(StatusCodes.NOT_FOUND).json({
+                error: "Time entry not found",
+            })
+        }
+
+        res.status(StatusCodes.OK).json({ success: true, id })
+    } catch (err) {
+        next(err)
+    }
+}
+
 const getAccountEntries = async (
     req: Request<GetTimeEntryParams["params"]>,
     res: Response,
@@ -53,6 +73,7 @@ const getAllEntries = async (
 
 export const TimeEntryController = {
     createTimeEntry,
+    deleteTimeEntry,
     getAccountEntries,
     getAllEntries,
 }

@@ -6,6 +6,10 @@ const create = async (input: CreateTimeEntryInput) => {
     return TimeEntryModel.create(input)
 }
 
+const deleteById = async (id: string) => {
+    return TimeEntryModel.findByIdAndDelete(id).exec()
+}
+
 const getAllEntries = async (filter: PaginationFilter) => {
     const { page = 1, limit = 20, ...queryFilters } = filter
     const offset = (page - 1) * limit
@@ -24,5 +28,6 @@ const getAllEntries = async (filter: PaginationFilter) => {
 
 export const TimeEntryService = {
     create,
+    deleteById,
     getAllEntries,
 }

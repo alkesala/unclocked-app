@@ -28,6 +28,11 @@ const getTimeEntriesSchema = z.object({
         accountId: z.string().min(1),
     }),
 })
+const deleteByIdSchema = z.object({
+    params: z.object({
+        id: z.string().length(24),
+    }),
+})
 
 export const TimeEntryFilterSchema = PaginationQuerySchema.extend({
     accountId: z.string().optional(),
@@ -39,6 +44,7 @@ export type TimeEntryFilter = z.infer<typeof TimeEntryFilterSchema>
 
 export const TimeEntryValidator = {
     getAllEntriesSchema,
+    deleteByIdSchema,
     createTimeEntrySchema,
     getTimeEntriesSchema,
 }
