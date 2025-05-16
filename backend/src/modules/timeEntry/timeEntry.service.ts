@@ -1,4 +1,4 @@
-import { BaseFilter } from "src/types/request-filters"
+import { BaseFilter } from "@/types/request-filters"
 import { TimeEntryModel } from "./timeEntry.model"
 import { CreateTimeEntryInput } from "./timeEntry.types"
 
@@ -23,12 +23,7 @@ const getAllEntries = async (filter: BaseFilter) => {
     }
 }
 
-const getByAccount = async (accountId: string) => {
-    return TimeEntryModel.find({ accountId }).sort({ startedAt: -1 }).lean()
-}
-
 export const TimeEntryService = {
     create,
     getAllEntries,
-    getByAccount,
 }

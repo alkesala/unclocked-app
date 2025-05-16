@@ -1,12 +1,12 @@
 import { z } from "zod"
-import { baseFilterSchema } from "../../types/request-filters"
+import { BaseFilterSchema } from "../../types/request-filters"
 
 // Pagination included
 const getAllEntriesSchema = z.object({
-    query: baseFilterSchema.extend({
-        accountId: z.string().optional(),
-        project: z.string().optional(),
-        course: z.string().optional(),
+    query: BaseFilterSchema.extend({
+        accountId: z.string().min(1),
+        project: z.string().min(1),
+        course: z.string().min(1),
     }),
 })
 
@@ -28,6 +28,14 @@ const getTimeEntriesSchema = z.object({
         accountId: z.string().min(1),
     }),
 })
+
+export const timeEntryFilterSchema = BaseFilterSchema.extend({
+    accountId: z.string().optional(),
+    project: z.string().optional(),
+    course: z.string().optional(),
+})
+
+export type TimeEntryFilter = z.infer<typeof timeEntryFilterSchema>
 
 export const timeEntryValidator = {
     getAllEntriesSchema,
