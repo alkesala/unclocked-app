@@ -2,7 +2,7 @@ import { z } from "zod"
 
 // accountId is just z.string while development cause of hardcoded "user"
 // TODO: Change accountId => UUID
-export const createTimeEntrySchema = z.object({
+const createTimeEntrySchema = z.object({
     body: z.object({
         accountId: z.string().min(1),
         startedAt: z.string().datetime(),
@@ -12,3 +12,14 @@ export const createTimeEntrySchema = z.object({
         note: z.string().optional(),
     }),
 })
+
+const getTimeEntriesSchema = z.object({
+    params: z.object({
+        accountId: z.string().min(1),
+    }),
+})
+
+export const timeEntryValidator = {
+    createTimeEntrySchema,
+    getTimeEntriesSchema,
+}

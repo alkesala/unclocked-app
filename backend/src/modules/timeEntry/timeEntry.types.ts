@@ -1,7 +1,12 @@
 import { z } from "zod"
-import { createTimeEntrySchema } from "./timeEntry.validator"
+import { timeEntryValidator } from "./timeEntry.validator"
 
-export type CreateTimeEntryInput = z.infer<typeof createTimeEntrySchema>
+export type CreateTimeEntryInput = z.infer<
+    typeof timeEntryValidator.createTimeEntrySchema
+>
+export type getTimeEntryParams = z.infer<
+    typeof timeEntryValidator.getTimeEntriesSchema
+>
 
 export type TimeEntry = {
     id: string

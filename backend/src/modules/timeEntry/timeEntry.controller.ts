@@ -2,14 +2,15 @@ import { Request, Response, NextFunction } from "express"
 import { TimeEntryService } from "./timeEntry.service"
 import { StatusCodes } from "http-status-codes"
 import { CreateTimeEntryInput } from "./timeEntry.types"
+import { getTimeEntryParams } from "./timeEntry.types"
 
 const createTimeEntry = async (
-    req: Request,
+    req: Request<CreateTimeEntryInput["body"]>,
     res: Response,
     next: NextFunction
 ) => {
     try {
-        const body = req.body as CreateTimeEntryInput
+        const body = req.body
         const created = await TimeEntryService.create(body)
         res.status(StatusCodes.CREATED).json(created)
     } catch (err) {
@@ -18,18 +19,12 @@ const createTimeEntry = async (
 }
 
 const getAccountEntries = async (
-    req: Request,
+    req: Request<getTimeEntryParams["params"]>,
     res: Response,
     next: NextFunction
 ) => {
     try {
-        const accountId = req.params.accountId
-        if (!accountId) {
-            return res
-                .status(StatusCodes.BAD_REQUEST)
-                .json({ error: "missing accountId" })
-        }
-
+        const { accountId } = req.params
         const entries = await TimeEntryService.getByAccount(accountId)
         res.status(StatusCodes.OK).json(entries)
     } catch (err) {
