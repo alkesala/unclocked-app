@@ -13,9 +13,9 @@
         "noUncheckedIndexedAccess": true,
         "noImplicitAny": true,
 
-        "baseUrl": ".",
+        "baseUrl": "src",
         "paths": {
-            "@/*": ["backend/src/*"]
+            "@/*": ["*"]
         }
     },
     "tsc-alias": {
