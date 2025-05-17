@@ -11,8 +11,9 @@ TimeEntryRouter.post(
     TimeEntryController.createTimeEntry
 )
 
+// Get account entries
 TimeEntryRouter.get(
-    "/get-entry/:accountId",
+    "/get-entry/:account",
     validator(TimeEntryValidator.getTimeEntriesSchema),
     TimeEntryController.getAccountEntries
 )

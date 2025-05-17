@@ -14,7 +14,7 @@ export type GetAllEntryQueries = z.infer<
 
 export type TimeEntry = {
     id: string
-    accountId: string
+    account: string
     startedAt: Date
     endedAt: Date
     project: string

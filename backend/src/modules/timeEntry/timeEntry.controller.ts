@@ -1,19 +1,17 @@
 import { Request, Response, NextFunction } from "express"
 import { TimeEntryService } from "./timeEntry.service"
 import { StatusCodes } from "http-status-codes"
-import { CreateTimeEntryInput } from "./timeEntry.types"
 import { GetTimeEntryParams } from "./timeEntry.types"
 import { PaginationQuerySchema } from "../../types/request-filters"
 import { TimeEntryFilterSchema } from "./timeEntry.validator"
 
 const createTimeEntry = async (
-    req: Request<CreateTimeEntryInput["body"]>,
+    req: Request,
     res: Response,
     next: NextFunction
 ) => {
     try {
-        const body = req.body
-        const created = await TimeEntryService.create(body)
+        const created = await TimeEntryService.create(req.body)
         res.status(StatusCodes.CREATED).json(created)
     } catch (err) {
         next(err)
@@ -48,7 +46,7 @@ const getAccountEntries = async (
     try {
         const filter = TimeEntryFilterSchema.parse({
             ...req.query,
-            accountId: req.params.accountId,
+            account: req.params.account,
         })
         const result = await TimeEntryService.getAllEntries(filter)
         res.status(StatusCodes.OK).json(result)
