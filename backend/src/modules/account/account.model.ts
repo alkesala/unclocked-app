@@ -6,14 +6,14 @@ import { Schema, model } from "mongoose"
 const AccountSchema = new Schema<IAccount>(
     {
         email: { type: String, required: true, unique: true },
-        name: { type: String, required: true, select: false },
+        name: { type: String, required: true },
         role: {
             type: String,
             enum: ["superadmin", "admin", "user"],
             default: "user",
             required: true,
         },
-        password: { type: String },
+        password: { type: String, select: false },
     },
     {
         timestamps: true,
