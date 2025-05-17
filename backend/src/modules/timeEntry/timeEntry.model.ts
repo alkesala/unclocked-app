@@ -34,7 +34,7 @@ const TimeEntrySchema = new Schema<ITimeEntry>(
 )
 export const TimeEntryModel = model<ITimeEntry>("TimeEntry", TimeEntrySchema)
 
-export interface ITimeEntry {
+interface ITimeEntry {
     account: Types.ObjectId
     startedAt: Date
     endedAt: Date
