@@ -1,21 +1,21 @@
-import mongoose, { Types, Schema, model } from "mongoose"
+import { Types, Schema, model } from "mongoose"
 
 const TimeEntrySchema = new Schema<ITimeEntry>(
     {
         account: {
-            type: mongoose.Schema.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "Account",
             required: true,
         },
         startedAt: { type: Date, required: true },
         endedAt: { type: Date, required: true },
         project: {
-            type: mongoose.Schema.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "Project",
             required: true,
         },
         course: {
-            type: mongoose.Schema.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "Course",
             required: true,
         },
