@@ -18,6 +18,5 @@ export type TimeEntry = {
     startedAt: Date
     endedAt: Date
     project: string
-    course: string
     note?: string
 }

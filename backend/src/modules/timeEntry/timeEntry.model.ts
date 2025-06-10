@@ -1,4 +1,4 @@
-import { Types, Schema, model } from "mongoose"
+import { Schema, Types, model } from "mongoose"
 
 const TimeEntrySchema = new Schema<ITimeEntry>(
     {
@@ -14,11 +14,7 @@ const TimeEntrySchema = new Schema<ITimeEntry>(
             ref: "Project",
             required: true,
         },
-        course: {
-            type: Schema.Types.ObjectId,
-            ref: "Course",
-            required: true,
-        },
+
         note: { type: String },
     },
     {
@@ -39,7 +35,6 @@ interface ITimeEntry {
     startedAt: Date
     endedAt: Date
     project: Types.ObjectId
-    course: Types.ObjectId
     note?: string
     createdAt: Date
     updatedAt: Date
