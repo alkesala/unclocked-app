@@ -37,6 +37,7 @@ const deleteTimeEntry = async (
     }
 }
 
+// Just for admin access
 const getAccountEntries = async (
     req: Request<GetTimeEntryParams["params"]>,
     res: Response,
