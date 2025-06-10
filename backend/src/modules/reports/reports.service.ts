@@ -23,7 +23,13 @@ const getAllReports = async (filter: PaginationFilter) => {
     }
 }
 
+//TODO: typesafety for id(?)
+const deleteReportById = async (id: string) => {
+    return ReportModel.findByIdAndDelete(id).exec()
+}
+
 export const ReportService = {
     createReport,
     getAllReports,
+    deleteReportById,
 }
