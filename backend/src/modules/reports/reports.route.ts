@@ -7,13 +7,13 @@ export const ReportRouter = Router()
 
 //TODO Inject account from auth middleware
 ReportRouter.get(
-    "/get-all",
+    "/",
     validator(ReportsValidator.getAllReportsSchema),
     ReportController.getAllReports
 )
 
 ReportRouter.post(
-    "/create-report",
+    "/",
     validator(ReportsValidator.createReportSchema),
     ReportController.createReport
 )
