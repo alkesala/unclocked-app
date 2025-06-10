@@ -33,6 +33,6 @@ interface IAccount {
     name: string
     password?: string
     role: "superadmin" | "admin" | "user"
-    createdAt: Date
-    updatedAt: Date
+    readonly createdAt: Date
+    readonly updatedAt: Date
 }
