@@ -3,22 +3,26 @@ import { dateString, objectId } from "@/utils/zodHelper"
 import { z } from "zod"
 // Pagination included
 const getAllEntriesSchema = z.object({
+    params: z.object({
+        account: objectId,
+    }),
     query: PaginationQuerySchema.extend({
-        account: objectId.optional(),
         project: objectId.optional(),
     }),
 })
 
 // Using zodHleper for objectId and dateString for easier consistency
-const createTimeEntrySchema = z.object({
-    body: z.object({
-        account: objectId,
-        startedAt: dateString,
-        endedAt: dateString,
-        project: objectId,
-        note: z.string().optional(),
-    }),
+const createTimeEntryBodySchema = z.object({
+    account: objectId,
+    startedAt: dateString,
+    endedAt: dateString,
+    project: objectId,
+    note: z.string().optional(),
 })
+const createTimeEntrySchema = z.object({
+    body: createTimeEntryBodySchema,
+})
+
 // TODO: change accountid => UUID // pagination
 const getTimeEntriesSchema = z.object({
     params: z.object({
@@ -36,11 +40,10 @@ export const TimeEntryFilterSchema = PaginationQuerySchema.extend({
     project: objectId.optional(),
 })
 
-export type TimeEntryFilter = z.infer<typeof TimeEntryFilterSchema>
-
 export const TimeEntryValidator = {
     getAllEntriesSchema,
     deleteByIdSchema,
     createTimeEntrySchema,
     getTimeEntriesSchema,
+    createTimeEntryBodySchema,
 }
