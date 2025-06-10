@@ -1,8 +1,7 @@
-import { Request, Response, NextFunction } from "express"
-import { TimeEntryService } from "./timeEntry.service"
+import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
+import { TimeEntryService } from "./timeEntry.service"
 import { GetTimeEntryParams } from "./timeEntry.types"
-import { PaginationQuerySchema } from "../../types/request-filters"
 import { TimeEntryFilterSchema } from "./timeEntry.validator"
 
 const createTimeEntry = async (
@@ -61,7 +60,7 @@ const getAllEntries = async (
     next: NextFunction
 ) => {
     try {
-        const filter = PaginationQuerySchema.parse(req.query)
+        const filter = TimeEntryFilterSchema.parse(req.query)
         const result = await TimeEntryService.getAllEntries(filter)
         res.status(StatusCodes.OK).json(result)
     } catch (err) {
