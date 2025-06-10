@@ -17,6 +17,21 @@ const createReport = async (
     }
 }
 
+const getAllReports = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const filter = ReportFilterSchema.parse(req.query)
+        const result = await ReportService.getAllReports(filter)
+        res.status(StatusCodes.OK).json(result)
+    } catch (err) {
+        next(err)
+    }
+}
+
+// Admin access only
 const getAccountReports = async (
     req: Request<GetReportParams["params"]>,
     res: Response,
@@ -58,4 +73,5 @@ export const ReportController = {
     createReport,
     getAccountReports,
     deleteReportById,
+    getAllReports,
 }
