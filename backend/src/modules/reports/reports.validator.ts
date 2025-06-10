@@ -13,6 +13,11 @@ const getAllReportsSchema = z.object({
     }),
 })
 
+const getReportsSchema = z.object({
+    params: z.object({
+        account: objectId,
+    }),
+})
 const createReportBodySchema = z.object({
     account: objectId,
     project: objectId,
@@ -34,4 +39,5 @@ export const ReportsValidator = {
     createReportSchema,
     createReportBodySchema,
     getAllReportsSchema,
+    getReportsSchema,
 }
