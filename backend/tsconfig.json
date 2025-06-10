@@ -16,7 +16,8 @@
         "baseUrl": "src",
         "paths": {
             "@/*": ["*"]
-        }
+        },
+        "typeRoots": ["./src/types", "./node_modules/@types"]
     },
     "tsc-alias": {
         "resolveFullPaths": true,

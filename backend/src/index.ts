@@ -1,16 +1,18 @@
-import express from "express"
-import dotenv from "dotenv"
+import { fakeOAuth } from "@/middleware/fake-oauth"
 import { requestLogger } from "@/middleware/request-logger"
-import http from "http"
-import { statusRouter } from "@/modules/status/status.route"
-import { logger } from "@/utils/logger"
 import { unknownEndpoint } from "@/middleware/unknown-endpoint"
-import { connectDB } from "@/utils/db"
+import { statusRouter } from "@/modules/status/status.route"
 import { TimeEntryRouter } from "@/modules/timeEntry/timeEntry.route"
+import { connectDB } from "@/utils/db"
+import { logger } from "@/utils/logger"
+import dotenv from "dotenv"
+import express from "express"
+import http from "http"
 
 dotenv.config()
-const app = express()
 
+const app = express()
+app.use(fakeOAuth)
 app.use(express.json())
 app.use(requestLogger)
 
