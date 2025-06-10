@@ -34,7 +34,28 @@ const getAccountReports = async (
     }
 }
 
+const deleteReportById = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction
+) => {
+    const { id } = req.params
+    try {
+        const deleted = await ReportService.deleteReportById(id)
+        if (!deleted) {
+            res.status(StatusCodes.NOT_FOUND).json({
+                error: "Report not found",
+            })
+        } else {
+            res.status(StatusCodes.OK).json({ success: true, id })
+        }
+    } catch (err) {
+        next(err)
+    }
+}
+
 export const ReportController = {
     createReport,
     getAccountReports,
+    deleteReportById,
 }
