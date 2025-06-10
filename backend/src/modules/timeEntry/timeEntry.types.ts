@@ -1,8 +1,11 @@
+import { Types } from "mongoose"
 import { z } from "zod"
-import { TimeEntryValidator } from "./timeEntry.validator"
-
+import {
+    TimeEntryFilterSchema,
+    TimeEntryValidator,
+} from "./timeEntry.validator"
 export type CreateTimeEntryInput = z.infer<
-    typeof TimeEntryValidator.createTimeEntrySchema
+    typeof TimeEntryValidator.createTimeEntryBodySchema
 >
 export type GetTimeEntryParams = z.infer<
     typeof TimeEntryValidator.getTimeEntriesSchema
@@ -11,12 +14,13 @@ export type GetTimeEntryParams = z.infer<
 export type GetAllEntryQueries = z.infer<
     typeof TimeEntryValidator.getAllEntriesSchema
 >
+export type TimeEntryFilter = z.infer<typeof TimeEntryFilterSchema>
 
 export type TimeEntry = {
     id: string
-    account: string
+    account: Types.ObjectId
     startedAt: Date
     endedAt: Date
-    project: string
+    project: Types.ObjectId
     note?: string
 }
