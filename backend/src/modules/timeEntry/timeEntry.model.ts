@@ -31,11 +31,11 @@ const TimeEntrySchema = new Schema<ITimeEntry>(
 export const TimeEntryModel = model<ITimeEntry>("TimeEntry", TimeEntrySchema)
 
 interface ITimeEntry {
-    account: Types.ObjectId
+    readonly account: Types.ObjectId
     startedAt: Date
     endedAt: Date
-    project: Types.ObjectId
+    readonly project: Types.ObjectId
     note?: string
-    createdAt: Date
-    updatedAt: Date
+    readonly createdAt: Date
+    readonly updatedAt: Date
 }
