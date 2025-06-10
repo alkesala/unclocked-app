@@ -1,38 +1,21 @@
-import { z } from "zod"
 import { PaginationQuerySchema } from "@/types/request-filters"
-import { Types } from "mongoose"
+import { dateString, objectId } from "@/utils/zodHelper"
+import { z } from "zod"
 // Pagination included
 const getAllEntriesSchema = z.object({
     query: PaginationQuerySchema.extend({
-        account: z.string().optional(),
-        project: z.string().optional(),
-        course: z.string().optional(),
+        account: objectId.optional(),
+        project: objectId.optional(),
     }),
 })
 
-// TODO: implement preprocess / Refactor this shit
+// Using zodHleper for objectId and dateString for easier consistency
 const createTimeEntrySchema = z.object({
     body: z.object({
-        account: z
-            .string()
-            .length(24)
-            .transform((s) => new Types.ObjectId(s)),
-        startedAt: z
-            .string()
-            .datetime()
-            .transform((s) => new Date(s)),
-        endedAt: z
-            .string()
-            .datetime()
-            .transform((s) => new Date(s)),
-        project: z
-            .string()
-            .length(24)
-            .transform((s) => new Types.ObjectId(s)),
-        course: z
-            .string()
-            .length(24)
-            .transform((s) => new Types.ObjectId(s)),
+        account: objectId,
+        startedAt: dateString,
+        endedAt: dateString,
+        project: objectId,
         note: z.string().optional(),
     }),
 })
@@ -49,9 +32,8 @@ const deleteByIdSchema = z.object({
 })
 
 export const TimeEntryFilterSchema = PaginationQuerySchema.extend({
-    account: z.string().optional(),
-    project: z.string().optional(),
-    course: z.string().optional(),
+    account: objectId.optional(),
+    project: objectId.optional(),
 })
 
 export type TimeEntryFilter = z.infer<typeof TimeEntryFilterSchema>
