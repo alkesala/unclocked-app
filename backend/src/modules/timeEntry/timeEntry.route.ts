@@ -1,6 +1,6 @@
+import validator from "@/middleware/validator"
 import { Router } from "express"
 import { TimeEntryController } from "./timeEntry.controller"
-import validator from "@/middleware/validator"
 import { TimeEntryValidator } from "./timeEntry.validator"
 
 export const TimeEntryRouter = Router()
@@ -17,7 +17,7 @@ TimeEntryRouter.get(
     validator(TimeEntryValidator.getTimeEntriesSchema),
     TimeEntryController.getAccountEntries
 )
-
+//TODO Inject account from auth middleware
 TimeEntryRouter.get(
     "/get-all",
     validator(TimeEntryValidator.getAllEntriesSchema),

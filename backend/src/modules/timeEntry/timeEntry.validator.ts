@@ -3,9 +3,7 @@ import { dateString, objectId } from "@/utils/zodHelper"
 import { z } from "zod"
 // Pagination included
 const getAllEntriesSchema = z.object({
-    params: z.object({
-        account: objectId,
-    }),
+    params: z.object({}),
     query: PaginationQuerySchema.extend({
         project: objectId.optional(),
     }),
