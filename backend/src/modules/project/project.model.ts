@@ -1,4 +1,4 @@
-import { Types, Schema, model } from "mongoose"
+import { Schema, Types, model } from "mongoose"
 
 const ProjectSchema = new Schema<IProject>(
     {
@@ -8,7 +8,6 @@ const ProjectSchema = new Schema<IProject>(
             required: true,
         },
         name: { type: String, required: true },
-        code: { type: String, required: true },
         description: { type: Text, required: true },
         isActive: { type: Boolean, required: true },
     },
@@ -28,7 +27,6 @@ export const ProjectModel = model<IProject>("Project", ProjectSchema)
 interface IProject {
     account: Types.ObjectId
     name: string
-    code: string
     description: Text
     isActive: boolean
     createdAt: Date
