@@ -5,7 +5,6 @@ import { ReportsValidator } from "./reports.validator"
 
 export const ReportRouter = Router()
 
-//TODO Inject account from auth middleware
 ReportRouter.get(
     "/",
     validator(ReportsValidator.getAllReportsSchema),
