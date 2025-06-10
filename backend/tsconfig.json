@@ -1,28 +1,25 @@
 {
     "compilerOptions": {
         "target": "ES6",
+        "moduleResolution": "Node",
         "esModuleInterop": true,
         "strict": true,
-        "moduleResolution": "Node",
         "noEmit": true,
-
         "outDir": "dist",
-
         "forceConsistentCasingInFileNames": true,
         "skipLibCheck": true,
         "noUncheckedIndexedAccess": true,
         "noImplicitAny": true,
-
         "baseUrl": "src",
         "paths": {
             "@/*": ["*"]
         },
-        "typeRoots": ["./src/types", "./node_modules/@types"]
+        "typeRoots": ["src/types", "node_modules/@types"]
     },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "dist", "docs"],
     "tsc-alias": {
         "resolveFullPaths": true,
         "verbose": false
-    },
-    "include": ["src"],
-    "exclude": ["node_modules", "dist", "docs"]
+    }
 }
