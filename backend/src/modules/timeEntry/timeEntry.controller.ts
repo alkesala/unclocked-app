@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
+import { Types } from "mongoose"
 import { TimeEntryService } from "./timeEntry.service"
-import { GetTimeEntryParams } from "./timeEntry.types"
 import { TimeEntryFilterSchema } from "./timeEntry.validator"
 
 const createTimeEntry = async (
@@ -10,7 +10,13 @@ const createTimeEntry = async (
     next: NextFunction
 ) => {
     try {
-        const created = await TimeEntryService.create(req.body)
+        if (!req.accountId) throw new Error("Unauthorized")
+
+        const created = await TimeEntryService.create({
+            ...req.body,
+            account: req.accountId,
+        })
+
         res.status(StatusCodes.CREATED).json(created)
     } catch (err) {
         next(err)
@@ -37,32 +43,17 @@ const deleteTimeEntry = async (
     }
 }
 
-// Just for admin access
-const getAccountEntries = async (
-    req: Request<GetTimeEntryParams["params"]>,
-    res: Response,
-    next: NextFunction
-) => {
+const getEntries = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const filter = TimeEntryFilterSchema.parse({
-            ...req.query,
-            account: req.params.account,
-        })
-        const result = await TimeEntryService.getAllEntries(filter)
-        res.status(StatusCodes.OK).json(result)
-    } catch (err) {
-        next(err)
-    }
-}
+        if (!req.accountId) throw new Error("Unauthorized")
 
-const getAllEntries = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
-    try {
         const filter = TimeEntryFilterSchema.parse(req.query)
-        const result = await TimeEntryService.getAllEntries(filter)
+
+        const result = await TimeEntryService.getAllEntries({
+            ...filter,
+            accountId: new Types.ObjectId(req.accountId),
+        })
+
         res.status(StatusCodes.OK).json(result)
     } catch (err) {
         next(err)
@@ -72,6 +63,5 @@ const getAllEntries = async (
 export const TimeEntryController = {
     createTimeEntry,
     deleteTimeEntry,
-    getAccountEntries,
-    getAllEntries,
+    getEntries,
 }

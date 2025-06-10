@@ -4,16 +4,17 @@ import {
     TimeEntryFilterSchema,
     TimeEntryValidator,
 } from "./timeEntry.validator"
+
 export type CreateTimeEntryInput = z.infer<
-    typeof TimeEntryValidator.createTimeEntryBodySchema
->
-export type GetTimeEntryParams = z.infer<
-    typeof TimeEntryValidator.getTimeEntriesSchema
+    typeof TimeEntryValidator.createTimeEntrySchema
 >
 
-export type GetAllEntryQueries = z.infer<
-    typeof TimeEntryValidator.getAllEntriesSchema
->
+export type TimeEntryFilterWithAccount = z.infer<
+    typeof TimeEntryFilterSchema
+> & {
+    accountId: Types.ObjectId
+}
+
 export type TimeEntryFilter = z.infer<typeof TimeEntryFilterSchema>
 
 export type TimeEntry = {
