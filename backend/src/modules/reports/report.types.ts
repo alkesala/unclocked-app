@@ -1,19 +1,24 @@
 import { Types } from "mongoose"
 import { z } from "zod"
-import { ReportsValidator } from "./reports.validator"
+import { ReportFilterSchema, ReportsValidator } from "./reports.validator"
 
 export type CreateReportInput = z.infer<
-    typeof ReportsValidator.createReportBodySchema
+    typeof ReportsValidator.createReportSchema
 >
 
-export type GetReportParams = z.infer<
-    typeof ReportsValidator.getAllReportsSchema
->
+export type ReportFilter = z.infer<typeof ReportFilterSchema> & {
+    accountId: Types.ObjectId
+}
 
-export type ReportEntry = {
+export interface ReportEntry {
     account: Types.ObjectId
     project: Types.ObjectId
     rangeStart: Date
     rangeEnd: Date
     name: string
+}
+
+export interface DeleteReportInput {
+    id: string
+    accountId: string
 }
