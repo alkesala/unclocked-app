@@ -8,7 +8,7 @@ const ProjectSchema = new Schema<IProject>(
             required: true,
         },
         name: { type: String, required: true },
-        description: { type: Text, required: true },
+        description: { type: String, required: true },
         isActive: { type: Boolean, required: true },
     },
     {
@@ -25,10 +25,10 @@ const ProjectSchema = new Schema<IProject>(
 export const ProjectModel = model<IProject>("Project", ProjectSchema)
 
 interface IProject {
-    account: Types.ObjectId
+    readonly account: Types.ObjectId
     name: string
-    description: Text
+    description: string
     isActive: boolean
-    createdAt: Date
-    updatedAt: Date
+    readonly createdAt: Date
+    readonly updatedAt: Date
 }
