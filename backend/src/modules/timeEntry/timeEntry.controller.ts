@@ -42,7 +42,7 @@ const deleteTimeEntry = async (
         })
         if (!deleted) {
             res.status(StatusCodes.NOT_FOUND).json({
-                error: "Time entry not found or unauthorized",
+                error: "Time entry not found",
             })
             return
         }
