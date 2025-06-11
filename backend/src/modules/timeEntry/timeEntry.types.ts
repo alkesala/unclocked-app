@@ -25,3 +25,7 @@ export type TimeEntry = {
     project: Types.ObjectId
     note?: string
 }
+export type DeleteTimeEntryInput = {
+    id: string
+    accountId: string
+}

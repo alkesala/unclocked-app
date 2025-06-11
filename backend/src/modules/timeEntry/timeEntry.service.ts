@@ -1,6 +1,8 @@
+import { Types } from "mongoose"
 import { TimeEntryModel } from "./timeEntry.model"
 import {
     CreateTimeEntryInput,
+    DeleteTimeEntryInput,
     TimeEntryFilterWithAccount,
 } from "./timeEntry.types"
 
@@ -8,8 +10,13 @@ const create = async (input: CreateTimeEntryInput) => {
     return TimeEntryModel.create(input)
 }
 
-const deleteById = async (id: string) => {
-    return TimeEntryModel.findByIdAndDelete(id).exec()
+const deleteById = async (input: DeleteTimeEntryInput) => {
+    const { id, accountId } = input
+    const accoundObjectId = new Types.ObjectId(accountId)
+    return TimeEntryModel.findOneAndDelete({
+        _id: id,
+        account: accoundObjectId,
+    }).exec()
 }
 
 const getAllEntries = async (filter: TimeEntryFilterWithAccount) => {
