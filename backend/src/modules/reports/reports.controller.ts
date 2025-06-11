@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
-import { GetReportParams } from "./report.types"
+import { Types } from "mongoose"
 import { ReportService } from "./reports.service"
 import { ReportFilterSchema } from "./reports.validator"
 
@@ -10,39 +10,25 @@ const createReport = async (
     next: NextFunction
 ) => {
     try {
-        const created = await ReportService.createReport(req.body)
+        if (!req.accountId) throw new Error("Unauthorized")
+        const created = await ReportService.createReport({
+            ...req.body,
+            account: req.accountId,
+        })
         res.status(StatusCodes.CREATED).json(created)
     } catch (err) {
         next(err)
     }
 }
 
-const getAllReports = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
+const getReports = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        if (!req.accountId) throw new Error("Unauthorized")
         const filter = ReportFilterSchema.parse(req.query)
-        const result = await ReportService.getAllReports(filter)
-        res.status(StatusCodes.OK).json(result)
-    } catch (err) {
-        next(err)
-    }
-}
-
-// Admin access only
-const getAccountReports = async (
-    req: Request<GetReportParams["params"]>,
-    res: Response,
-    next: NextFunction
-) => {
-    try {
-        const filter = ReportFilterSchema.parse({
-            ...req.query,
-            account: req.params.account,
+        const result = await ReportService.getAllReports({
+            ...filter,
+            accountId: new Types.ObjectId(req.accountId),
         })
-        const result = await ReportService.getAllReports(filter)
         res.status(StatusCodes.OK).json(result)
     } catch (err) {
         next(err)
@@ -71,7 +57,6 @@ const deleteReportById = async (
 
 export const ReportController = {
     createReport,
-    getAccountReports,
     deleteReportById,
-    getAllReports,
+    getReports,
 }
