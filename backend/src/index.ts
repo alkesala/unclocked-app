@@ -1,6 +1,7 @@
 import { fakeOAuth } from "@/middleware/fake-oauth"
 import { requestLogger } from "@/middleware/request-logger"
 import { unknownEndpoint } from "@/middleware/unknown-endpoint"
+import { ReportRouter } from "@/modules/reports/reports.route"
 import { statusRouter } from "@/modules/status/status.route"
 import { TimeEntryRouter } from "@/modules/timeEntry/timeEntry.route"
 import { connectDB } from "@/utils/db"
@@ -27,6 +28,7 @@ const apiRouter = express.Router()
 apiRouter.use(statusRouter)
 
 apiRouter.use("/time", TimeEntryRouter)
+apiRouter.use("/reports", ReportRouter)
 
 app.use("/api/v1", apiRouter)
 
