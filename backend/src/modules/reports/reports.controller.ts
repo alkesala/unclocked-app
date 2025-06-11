@@ -25,7 +25,7 @@ const getReports = async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!req.accountId) throw new Error("Unauthorized")
         const filter = ReportFilterSchema.parse(req.query)
-        const result = await ReportService.getAllReports({
+        const result = await ReportService.getReports({
             ...filter,
             accountId: new Types.ObjectId(req.accountId),
         })
@@ -39,17 +39,26 @@ const deleteReportById = async (
     req: Request<{ id: string }>,
     res: Response,
     next: NextFunction
-) => {
+): Promise<void> => {
     const { id } = req.params
     try {
-        const deleted = await ReportService.deleteReportById(id)
+        if (!req.accountId) {
+            res.status(StatusCodes.UNAUTHORIZED).json({
+                error: "Unauthorized",
+            })
+            return
+        }
+        const deleted = await ReportService.deleteReportById({
+            id,
+            accountId: req.accountId,
+        })
         if (!deleted) {
             res.status(StatusCodes.NOT_FOUND).json({
                 error: "Report not found",
             })
-        } else {
-            res.status(StatusCodes.OK).json({ success: true, id })
+            return
         }
+        res.status(StatusCodes.OK).json({ success: true, id })
     } catch (err) {
         next(err)
     }
