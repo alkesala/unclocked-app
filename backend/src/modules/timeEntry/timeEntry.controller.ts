@@ -27,14 +27,24 @@ const deleteTimeEntry = async (
     req: Request<{ id: string }>,
     res: Response,
     next: NextFunction
-) => {
+): Promise<void> => {
     const { id } = req.params
     try {
-        const deleted = await TimeEntryService.deleteById(id)
+        if (!req.accountId) {
+            res.status(StatusCodes.UNAUTHORIZED).json({
+                error: "Unauthorized",
+            })
+            return
+        }
+        const deleted = await TimeEntryService.deleteById({
+            id,
+            accountId: req.accountId,
+        })
         if (!deleted) {
             res.status(StatusCodes.NOT_FOUND).json({
-                error: "Time entry not found",
+                error: "Time entry not found or unauthorized",
             })
+            return
         }
 
         res.status(StatusCodes.OK).json({ success: true, id })
