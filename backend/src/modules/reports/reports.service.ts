@@ -1,4 +1,9 @@
-import { CreateReportInput, ReportFilter } from "./report.types"
+import { Types } from "mongoose"
+import {
+    CreateReportInput,
+    DeleteReportInput,
+    ReportFilter,
+} from "./report.types"
 import { ReportModel } from "./reports.model"
 
 // Basic CRUD operations for reports
@@ -6,7 +11,7 @@ const createReport = async (input: CreateReportInput) => {
     return ReportModel.create(input)
 }
 
-const getAllReports = async (filter: ReportFilter) => {
+const getReports = async (filter: ReportFilter) => {
     const { page = 1, limit = 20, accountId, ...queryFilters } = filter
     const offset = (page - 1) * limit
     const [data, total] = await Promise.all([
@@ -24,12 +29,17 @@ const getAllReports = async (filter: ReportFilter) => {
     }
 }
 
-const deleteReportById = async (id: string) => {
-    return ReportModel.findByIdAndDelete(id).exec()
+const deleteReportById = async (input: DeleteReportInput) => {
+    const { id, accountId } = input
+    const accountObjectId = new Types.ObjectId(accountId)
+    return ReportModel.findOneAndDelete({
+        _id: id,
+        account: accountObjectId,
+    }).exec()
 }
 
 export const ReportService = {
     createReport,
-    getAllReports,
+    getReports,
     deleteReportById,
 }
