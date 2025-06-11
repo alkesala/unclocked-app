@@ -1,11 +1,15 @@
 import { Schema, model } from "mongoose"
-//TODO: check the permission mapping
-// unique: true
 // NEVER LEAK THE PW so "select: false"
 
 const AccountSchema = new Schema<IAccount>(
     {
-        email: { type: String, required: true, unique: true },
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+            lowercase: true,
+            trim: true,
+        },
         name: { type: String, required: true },
         role: {
             type: String,
@@ -26,13 +30,14 @@ const AccountSchema = new Schema<IAccount>(
         },
     }
 )
+AccountSchema.index({ email: 1 })
 export const AccountModel = model<IAccount>("Account", AccountSchema)
 
 interface IAccount {
-    email: string
+    readonly email: string
     name: string
     password?: string
-    role: "superadmin" | "admin" | "user"
+    readonly role: "superadmin" | "admin" | "user"
     readonly createdAt: Date
     readonly updatedAt: Date
 }
