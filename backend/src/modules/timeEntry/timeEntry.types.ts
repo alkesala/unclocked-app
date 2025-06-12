@@ -9,13 +9,9 @@ export type CreateTimeEntryInput = z.infer<
     typeof TimeEntryValidator.createTimeEntrySchema
 >
 
-export type TimeEntryFilterWithAccount = z.infer<
-    typeof TimeEntryFilterSchema
-> & {
+export type TimeEntryFilter = z.infer<typeof TimeEntryFilterSchema> & {
     accountId: string
 }
-
-export type TimeEntryFilter = z.infer<typeof TimeEntryFilterSchema>
 
 export type TimeEntry = {
     id: string

@@ -3,14 +3,14 @@ import { TimeEntryModel } from "./timeEntry.model"
 import {
     CreateTimeEntryInput,
     DeleteTimeEntryInput,
-    TimeEntryFilterWithAccount,
+    TimeEntryFilter,
 } from "./timeEntry.types"
 
 const create = async (input: CreateTimeEntryInput) => {
     return TimeEntryModel.create(input)
 }
 
-const getAllEntries = async (filter: TimeEntryFilterWithAccount) => {
+const getAllEntries = async (filter: TimeEntryFilter) => {
     const { page = 1, limit = 20, accountId, ...queryFilters } = filter
     const accountObjectId = new Types.ObjectId(accountId)
     const offset = (page - 1) * limit
