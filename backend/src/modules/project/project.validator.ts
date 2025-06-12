@@ -6,6 +6,7 @@ const createProjectSchema = z.object({
         name: z.string().min(1, "Project name is required"),
         description: z.string().min(1, "Project description is required"),
         isActive: z.boolean().default(true),
+        hourlyRate: z.number().optional(),
     }),
 })
 
@@ -18,6 +19,7 @@ const updateProjectSchema = z
                 .min(1, "Project description is required")
                 .optional(),
             isActive: z.boolean().optional(),
+            hourlyRate: z.number().optional(),
         }),
     })
     .strict()

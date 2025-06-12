@@ -10,6 +10,11 @@ const ProjectSchema = new Schema<IProject>(
         name: { type: String, required: true },
         description: { type: String, required: true },
         isActive: { type: Boolean, required: true },
+        hourlyRate: {
+            type: Number,
+            required: true,
+            default: 0,
+        },
     },
     {
         timestamps: true,
@@ -29,6 +34,7 @@ interface IProject {
     name: string
     description: string
     isActive: boolean
+    hourlyRate: number
     readonly createdAt: Date
     readonly updatedAt: Date
 }
