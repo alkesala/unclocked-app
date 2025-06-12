@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
-import { Types } from "mongoose"
 import { ProjectService } from "./project.service"
 import { ProjectFilterSchema } from "./project.validator"
 
@@ -41,7 +40,7 @@ const getProjects = async (
         const filter = ProjectFilterSchema.parse(req.query)
         const result = await ProjectService.getProjects({
             ...filter,
-            accountId: new Types.ObjectId(req.accountId),
+            accountId: req.accountId,
         })
         res.status(StatusCodes.OK).json(result)
     } catch (err) {

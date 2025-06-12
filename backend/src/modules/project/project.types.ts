@@ -1,5 +1,4 @@
 import { PaginationQuerySchema } from "@/types/request-filters"
-import { Types } from "mongoose"
 import { z } from "zod"
 import { ProjectValidator } from "./project.validator"
 
@@ -11,7 +10,7 @@ export type UpdateProjectInput = z.infer<
 >
 
 export type ProjectsFilter = z.infer<typeof PaginationQuerySchema> & {
-    accountId: Types.ObjectId
+    accountId: string
 }
 
 export interface DeleteProjectInput {

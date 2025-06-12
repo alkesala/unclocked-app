@@ -1,10 +1,8 @@
 import { PaginationQuerySchema } from "@/types/request-filters"
-import { objectId } from "@/utils/zodHelper"
 import { z } from "zod"
 
 const createProjectSchema = z.object({
     body: z.object({
-        account: objectId,
         name: z.string().min(1, "Project name is required"),
         description: z.string().min(1, "Project description is required"),
         isActive: z.boolean().default(true),

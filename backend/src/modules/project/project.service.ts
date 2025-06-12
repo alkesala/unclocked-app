@@ -14,11 +14,15 @@ const createProject = async (input: CreateProjectInput) => {
 const getProjects = async (filter: ProjectsFilter) => {
     const { page = 1, limit = 20, accountId, ...queryFilters } = filter
     const offset = (page - 1) * limit
+    const accountObjectId = new Types.ObjectId(accountId)
     const [data, total] = await Promise.all([
-        ProjectModel.find({ account: accountId, ...queryFilters })
+        ProjectModel.find({ account: accountObjectId, ...queryFilters })
             .skip(offset)
             .limit(limit),
-        ProjectModel.countDocuments({ account: accountId, ...queryFilters }),
+        ProjectModel.countDocuments({
+            account: accountObjectId,
+            ...queryFilters,
+        }),
     ])
     return {
         data,
