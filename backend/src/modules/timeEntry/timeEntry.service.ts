@@ -1,4 +1,5 @@
 import { Types } from "mongoose"
+import { ProjectModel } from "../project/project.model"
 import { TimeEntryModel } from "./timeEntry.model"
 import {
     CreateTimeEntryInput,
@@ -7,7 +8,18 @@ import {
 } from "./timeEntry.types"
 
 const create = async (input: CreateTimeEntryInput) => {
-    return TimeEntryModel.create(input)
+    const project = await ProjectModel.findById(input.body.project)
+
+    if (!project) {
+        throw new Error("Project not found")
+    }
+
+    const effectiveHourlyRate = input.body.hourlyRate ?? project.hourlyRate ?? 0
+
+    return TimeEntryModel.create({
+        ...input.body,
+        hourlyRate: effectiveHourlyRate,
+    })
 }
 
 const getAllEntries = async (filter: TimeEntryFilter) => {

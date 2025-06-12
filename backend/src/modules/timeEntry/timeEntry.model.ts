@@ -16,6 +16,7 @@ const TimeEntrySchema = new Schema<ITimeEntry>(
         },
 
         note: { type: String },
+        hourlyRate: { type: Number, default: undefined },
     },
     {
         timestamps: true,
@@ -36,6 +37,7 @@ interface ITimeEntry {
     endedAt: Date
     readonly project: Types.ObjectId
     note?: string
+    hourlyRate: number
     readonly createdAt: Date
     readonly updatedAt: Date
 }

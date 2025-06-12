@@ -15,6 +15,7 @@ const createTimeEntrySchema = z.object({
         endedAt: dateString,
         project: objectId,
         note: z.string().optional(),
+        hourlyRate: z.number().optional(),
     }),
 })
 
