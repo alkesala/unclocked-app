@@ -8,7 +8,7 @@ const createProject = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => {
+): Promise<void> => {
     try {
         if (!req.accountId) {
             res.status(StatusCodes.UNAUTHORIZED).json({
@@ -26,7 +26,11 @@ const createProject = async (
     }
 }
 
-const getProjects = async (req: Request, res: Response, next: NextFunction) => {
+const getProjects = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
     try {
         if (!req.accountId) {
             res.status(StatusCodes.UNAUTHORIZED).json({
