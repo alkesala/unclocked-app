@@ -13,12 +13,16 @@ const createReport = async (input: CreateReportInput) => {
 
 const getReports = async (filter: ReportFilter) => {
     const { page = 1, limit = 20, accountId, ...queryFilters } = filter
+    const accountObjectId = new Types.ObjectId(accountId)
     const offset = (page - 1) * limit
     const [data, total] = await Promise.all([
-        ReportModel.find({ account: accountId, ...queryFilters })
+        ReportModel.find({ account: accountObjectId, ...queryFilters })
             .skip(offset)
             .limit(limit),
-        ReportModel.countDocuments({ account: accountId, ...queryFilters }),
+        ReportModel.countDocuments({
+            account: accountObjectId,
+            ...queryFilters,
+        }),
     ])
     return {
         data,

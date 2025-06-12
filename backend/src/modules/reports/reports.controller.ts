@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
-import { Types } from "mongoose"
 import { ReportService } from "./reports.service"
 import { ReportFilterSchema } from "./reports.validator"
 
@@ -8,9 +7,14 @@ const createReport = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => {
+): Promise<void> => {
     try {
-        if (!req.accountId) throw new Error("Unauthorized")
+        if (!req.accountId) {
+            res.status(StatusCodes.UNAUTHORIZED).json({
+                error: "Unauthorized",
+            })
+            return
+        }
         const created = await ReportService.createReport({
             ...req.body,
             account: req.accountId,
@@ -21,13 +25,23 @@ const createReport = async (
     }
 }
 
-const getReports = async (req: Request, res: Response, next: NextFunction) => {
+// needs testing
+const getReports = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
     try {
-        if (!req.accountId) throw new Error("Unauthorized")
+        if (!req.accountId) {
+            res.status(StatusCodes.UNAUTHORIZED).json({
+                error: "Unauthorized",
+            })
+            return
+        }
         const filter = ReportFilterSchema.parse(req.query)
         const result = await ReportService.getReports({
             ...filter,
-            accountId: new Types.ObjectId(req.accountId),
+            accountId: req.accountId,
         })
         res.status(StatusCodes.OK).json(result)
     } catch (err) {

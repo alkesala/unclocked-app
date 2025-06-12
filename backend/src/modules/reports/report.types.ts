@@ -7,7 +7,7 @@ export type CreateReportInput = z.infer<
 >
 
 export type ReportFilter = z.infer<typeof ReportFilterSchema> & {
-    accountId: Types.ObjectId
+    accountId: string
 }
 
 export interface ReportEntry {
