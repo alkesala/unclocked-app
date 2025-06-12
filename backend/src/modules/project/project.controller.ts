@@ -10,7 +10,12 @@ const createProject = async (
     next: NextFunction
 ) => {
     try {
-        if (!req.accountId) throw new Error("Unauthorized")
+        if (!req.accountId) {
+            res.status(StatusCodes.UNAUTHORIZED).json({
+                error: "Unauthorized",
+            })
+            return
+        }
         const created = await ProjectService.createProject({
             ...req.body,
             account: req.accountId,
@@ -23,7 +28,12 @@ const createProject = async (
 
 const getProjects = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        if (!req.accountId) throw new Error("Unauthorized")
+        if (!req.accountId) {
+            res.status(StatusCodes.UNAUTHORIZED).json({
+                error: "Unauthorized",
+            })
+            return
+        }
         const filter = ProjectFilterSchema.parse(req.query)
         const result = await ProjectService.getProjects({
             ...filter,
@@ -60,9 +70,38 @@ const updateProjectById = async (
         next(err)
     }
 }
+const deleteProjectById = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    const { id } = req.params
+    try {
+        if (!req.accountId) {
+            res.status(StatusCodes.UNAUTHORIZED).json({
+                error: "Unauthorized",
+            })
+            return
+        }
+        const deleted = await ProjectService.deleteProjectById({
+            id,
+            accountId: req.accountId,
+        })
+        if (!deleted) {
+            res.status(StatusCodes.NOT_FOUND).json({
+                error: "Project not found",
+            })
+            return
+        }
+        res.status(StatusCodes.NO_CONTENT).send()
+    } catch (err) {
+        next(err)
+    }
+}
 
 export const ProjectController = {
     createProject,
     getProjects,
     updateProjectById,
+    deleteProjectById,
 }
