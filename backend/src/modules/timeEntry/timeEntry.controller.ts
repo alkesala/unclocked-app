@@ -8,9 +8,14 @@ const createTimeEntry = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => {
+): Promise<void> => {
     try {
-        if (!req.accountId) throw new Error("Unauthorized")
+        if (!req.accountId) {
+            res.status(StatusCodes.UNAUTHORIZED).json({
+                error: "Unauthorized",
+            })
+            return
+        }
 
         const created = await TimeEntryService.create({
             ...req.body,
@@ -46,7 +51,6 @@ const deleteTimeEntry = async (
             })
             return
         }
-
         res.status(StatusCodes.OK).json({ success: true, id })
     } catch (err) {
         next(err)
@@ -55,15 +59,17 @@ const deleteTimeEntry = async (
 
 const getEntries = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        if (!req.accountId) throw new Error("Unauthorized")
-
+        if (!req.accountId) {
+            res.status(StatusCodes.UNAUTHORIZED).json({
+                error: "Unauthorized",
+            })
+            return
+        }
         const filter = TimeEntryFilterSchema.parse(req.query)
-
         const result = await TimeEntryService.getAllEntries({
             ...filter,
             accountId: new Types.ObjectId(req.accountId),
         })
-
         res.status(StatusCodes.OK).json(result)
     } catch (err) {
         next(err)
