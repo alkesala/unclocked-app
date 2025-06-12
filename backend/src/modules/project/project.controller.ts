@@ -62,7 +62,11 @@ const updateProjectById = async (
             })
             return
         }
-        const updated = await ProjectService.updateProjectById(id, req.body)
+        const updated = await ProjectService.updateProjectById(
+            id,
+            req.body,
+            req.accountId
+        )
         if (!updated) {
             res.status(StatusCodes.NOT_FOUND).json({
                 error: "Project not found",
@@ -74,6 +78,7 @@ const updateProjectById = async (
         next(err)
     }
 }
+
 const deleteProjectById = async (
     req: Request<{ id: string }>,
     res: Response,

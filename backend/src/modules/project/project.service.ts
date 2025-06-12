@@ -4,6 +4,7 @@ import {
     CreateProjectInput,
     DeleteProjectInput,
     ProjectsFilter,
+    UpdateProjectInput,
 } from "./project.types"
 
 const createProject = async (input: CreateProjectInput) => {
@@ -30,9 +31,15 @@ const getProjects = async (filter: ProjectsFilter) => {
 
 const updateProjectById = async (
     id: string,
-    input: Partial<CreateProjectInput>
+    input: Partial<UpdateProjectInput>,
+    accountId: string
 ) => {
-    return ProjectModel.findByIdAndUpdate(id, input, { new: true })
+    const accountObjectId = new Types.ObjectId(accountId)
+    return ProjectModel.findByIdAndUpdate(
+        { _id: id, account: accountObjectId },
+        input,
+        { new: true }
+    )
 }
 
 const deleteProjectById = async (input: DeleteProjectInput) => {
