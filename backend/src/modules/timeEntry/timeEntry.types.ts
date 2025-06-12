@@ -12,7 +12,7 @@ export type CreateTimeEntryInput = z.infer<
 export type TimeEntryFilterWithAccount = z.infer<
     typeof TimeEntryFilterSchema
 > & {
-    accountId: Types.ObjectId
+    accountId: string
 }
 
 export type TimeEntryFilter = z.infer<typeof TimeEntryFilterSchema>

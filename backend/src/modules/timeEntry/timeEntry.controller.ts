@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
-import { Types } from "mongoose"
 import { TimeEntryService } from "./timeEntry.service"
 import { TimeEntryFilterSchema } from "./timeEntry.validator"
 
@@ -68,7 +67,7 @@ const getEntries = async (req: Request, res: Response, next: NextFunction) => {
         const filter = TimeEntryFilterSchema.parse(req.query)
         const result = await TimeEntryService.getAllEntries({
             ...filter,
-            accountId: new Types.ObjectId(req.accountId),
+            accountId: req.accountId,
         })
         res.status(StatusCodes.OK).json(result)
     } catch (err) {

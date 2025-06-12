@@ -10,23 +10,18 @@ const create = async (input: CreateTimeEntryInput) => {
     return TimeEntryModel.create(input)
 }
 
-const deleteById = async (input: DeleteTimeEntryInput) => {
-    const { id, accountId } = input
-    const accoundObjectId = new Types.ObjectId(accountId)
-    return TimeEntryModel.findOneAndDelete({
-        _id: id,
-        account: accoundObjectId,
-    }).exec()
-}
-
 const getAllEntries = async (filter: TimeEntryFilterWithAccount) => {
-    const { accountId, page = 1, limit = 20, ...queryFilters } = filter
+    const { page = 1, limit = 20, accountId, ...queryFilters } = filter
+    const accountObjectId = new Types.ObjectId(accountId)
     const offset = (page - 1) * limit
     const [data, total] = await Promise.all([
-        TimeEntryModel.find({ account: accountId, ...queryFilters })
+        TimeEntryModel.find({ account: accountObjectId, ...queryFilters })
             .skip(offset)
             .limit(limit),
-        TimeEntryModel.countDocuments({ account: accountId, ...queryFilters }),
+        TimeEntryModel.countDocuments({
+            account: accountObjectId,
+            ...queryFilters,
+        }),
     ])
     return {
         data,
@@ -35,6 +30,14 @@ const getAllEntries = async (filter: TimeEntryFilterWithAccount) => {
         limit,
         offset,
     }
+}
+const deleteById = async (input: DeleteTimeEntryInput) => {
+    const { id, accountId } = input
+    const accountObjectId = new Types.ObjectId(accountId)
+    return TimeEntryModel.findOneAndDelete({
+        _id: id,
+        account: accountObjectId,
+    }).exec()
 }
 
 export const TimeEntryService = {
