@@ -28,6 +28,13 @@ const getProjects = async (filter: ProjectsFilter) => {
     }
 }
 
+const updateProjectById = async (
+    id: string,
+    input: Partial<CreateProjectInput>
+) => {
+    return ProjectModel.findByIdAndUpdate(id, input, { new: true })
+}
+
 const deleteProjectById = async (input: DeleteProjectInput) => {
     const { id, accountId } = input
     const accountObjectId = new Types.ObjectId(accountId)
@@ -41,4 +48,5 @@ export const ProjectService = {
     createProject,
     getProjects,
     deleteProjectById,
+    updateProjectById,
 }

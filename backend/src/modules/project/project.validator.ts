@@ -11,6 +11,19 @@ const createProjectSchema = z.object({
     }),
 })
 
+const updateProjectSchema = z
+    .object({
+        body: z.object({
+            name: z.string().min(1, "Project name is required").optional(),
+            description: z
+                .string()
+                .min(1, "Project description is required")
+                .optional(),
+            isActive: z.boolean().optional(),
+        }),
+    })
+    .strict()
+
 export const ProjectFilterSchema = PaginationQuerySchema.extend({
     isActive: z.enum(["true", "false"]).optional(),
 })
@@ -29,4 +42,5 @@ export const ProjectValidator = {
     createProjectSchema,
     getProjectsSchema,
     deleteProjectByIdSchema,
+    updateProjectSchema,
 }

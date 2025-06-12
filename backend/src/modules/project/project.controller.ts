@@ -35,7 +35,34 @@ const getProjects = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+const updateProjectById = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    const { id } = req.params
+    try {
+        if (!req.accountId) {
+            res.status(StatusCodes.UNAUTHORIZED).json({
+                error: "Unauthorized",
+            })
+            return
+        }
+        const updated = await ProjectService.updateProjectById(id, req.body)
+        if (!updated) {
+            res.status(StatusCodes.NOT_FOUND).json({
+                error: "Project not found",
+            })
+            return
+        }
+        res.status(StatusCodes.OK).json(updated)
+    } catch (err) {
+        next(err)
+    }
+}
+
 export const ProjectController = {
     createProject,
     getProjects,
+    updateProjectById,
 }
