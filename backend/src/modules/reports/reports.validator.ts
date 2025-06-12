@@ -5,7 +5,6 @@ import { z } from "zod"
 // Do not add totalHours or totalEarnings, they are computed in the backend and user cannot set them
 const createReportSchema = z.object({
     body: z.object({
-        account: objectId,
         project: objectId,
         rangeStart: dateString,
         rangeEnd: dateString,

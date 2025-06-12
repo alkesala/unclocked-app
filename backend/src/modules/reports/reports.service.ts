@@ -24,6 +24,7 @@ const getReports = async (filter: ReportFilter) => {
             ...queryFilters,
         }),
     ])
+
     return {
         data,
         total,
