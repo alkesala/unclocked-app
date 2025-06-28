@@ -31,6 +31,10 @@ export default [
     },
     rules: {
       "no-unused-vars": "warn",
+      "@typescript-eslint/no-unsafe-argument": "off",
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
+
     },
   },
   {

@@ -1,25 +1,29 @@
 {
-    "compilerOptions": {
-        "target": "ES6",
-        "moduleResolution": "Node",
-        "esModuleInterop": true,
-        "strict": true,
-        "noEmit": true,
-        "outDir": "dist",
-        "forceConsistentCasingInFileNames": true,
-        "skipLibCheck": true,
-        "noUncheckedIndexedAccess": true,
-        "noImplicitAny": true,
-        "baseUrl": "src",
-        "paths": {
-            "@/*": ["*"]
-        },
-        "typeRoots": ["src/types", "node_modules/@types"]
+  "compilerOptions": {
+    "target": "ES6",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "strict": true,
+    "noEmit": true,
+    "outDir": "dist",
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitAny": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@shared/*": ["../shared/src/*"]
     },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules", "dist", "docs"],
-    "tsc-alias": {
-        "resolveFullPaths": true,
-        "verbose": false
-    }
+    "typeRoots": ["src/types", "node_modules/@types"]
+  },
+  "include": [
+    "src/**/*",
+    "../shared/src/**/*"
+  ],
+  "exclude": ["node_modules", "dist", "docs"],
+  "tsc-alias": {
+    "resolveFullPaths": true,
+    "verbose": false
+  }
 }
