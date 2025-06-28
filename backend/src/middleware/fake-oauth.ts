@@ -1,4 +1,3 @@
-// src/middleware/fakeOAuth.ts
 import { NextFunction, Request, Response } from "express"
 
 export const fakeOAuth = (req: Request, _res: Response, next: NextFunction) => {

@@ -12,7 +12,7 @@ const getAllEntriesSchema = z.object({
 const createTimeEntrySchema = z.object({
     body: z.object({
         startedAt: dateString,
-        endedAt: dateString,
+        endedAt: dateString.optional(),
         project: objectId,
         note: z.string().optional(),
         hourlyRate: z.number().optional(),
@@ -25,6 +25,15 @@ const deleteByIdSchema = z.object({
     }),
 })
 
+const endTimeEntrySchema = z.object({
+    params: z.object({
+        id: z.string().length(24),
+    }),
+    body: z.object({
+        endedAt: dateString,
+    }),
+})
+
 export const TimeEntryFilterSchema = PaginationQuerySchema.extend({
     project: objectId.optional(),
 })
@@ -33,4 +42,5 @@ export const TimeEntryValidator = {
     getAllEntriesSchema,
     deleteByIdSchema,
     createTimeEntrySchema,
+    endTimeEntrySchema,
 }

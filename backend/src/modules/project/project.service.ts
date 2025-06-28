@@ -39,7 +39,7 @@ const updateProjectById = async (
     accountId: string
 ) => {
     const accountObjectId = new Types.ObjectId(accountId)
-    return ProjectModel.findByIdAndUpdate(
+    return ProjectModel.findOneAndUpdate(
         { _id: id, account: accountObjectId },
         input,
         { new: true }

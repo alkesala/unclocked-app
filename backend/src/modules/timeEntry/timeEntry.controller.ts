@@ -55,6 +55,34 @@ const deleteTimeEntry = async (
         next(err)
     }
 }
+const endTimeEntry = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        if (!req.accountId) {
+            res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" })
+            return
+        }
+        const ended = await TimeEntryService.endTimeEntry(
+            {
+                params: req.params,
+                body: req.body,
+            },
+            req.accountId
+        )
+        if (!ended) {
+            res.status(StatusCodes.NOT_FOUND).json({
+                error: "Time entry not found",
+            })
+            return
+        }
+        res.status(StatusCodes.OK).json(ended)
+    } catch (err) {
+        next(err)
+    }
+}
 
 const getEntries = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -79,4 +107,5 @@ export const TimeEntryController = {
     createTimeEntry,
     deleteTimeEntry,
     getEntries,
+    endTimeEntry,
 }

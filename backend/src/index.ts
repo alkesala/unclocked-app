@@ -9,7 +9,7 @@ import { logger } from "@/utils/logger"
 import dotenv from "dotenv"
 import express from "express"
 import http from "http"
-
+import { ProjectRouter } from "./modules/project/project.route"
 dotenv.config()
 
 const app = express()
@@ -26,7 +26,7 @@ const server = http.createServer(app)
 const apiRouter = express.Router()
 
 apiRouter.use(statusRouter)
-
+apiRouter.use("/project", ProjectRouter)
 apiRouter.use("/time", TimeEntryRouter)
 apiRouter.use("/reports", ReportRouter)
 

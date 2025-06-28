@@ -4,6 +4,7 @@ import { TimeEntryModel } from "./timeEntry.model"
 import {
     CreateTimeEntryInput,
     DeleteTimeEntryInput,
+    EndTimeEntryInput,
     TimeEntryFilter,
 } from "./timeEntry.types"
 
@@ -20,6 +21,15 @@ const create = async (input: CreateTimeEntryInput) => {
         ...input,
         hourlyRate: effectiveHourlyRate,
     })
+}
+
+const endTimeEntry = async (input: EndTimeEntryInput, accountId: string) => {
+    const accountObjectId = new Types.ObjectId(accountId)
+    return TimeEntryModel.findOneAndUpdate(
+        { _id: input.params.id, account: accountObjectId },
+        { $set: { endedAt: input.body.endedAt } },
+        { new: true }
+    )
 }
 
 const getAllEntries = async (filter: TimeEntryFilter) => {
@@ -56,4 +66,5 @@ export const TimeEntryService = {
     create,
     deleteById,
     getAllEntries,
+    endTimeEntry,
 }

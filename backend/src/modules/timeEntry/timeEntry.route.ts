@@ -21,3 +21,8 @@ TimeEntryRouter.delete(
     validator(TimeEntryValidator.deleteByIdSchema),
     TimeEntryController.deleteTimeEntry
 )
+TimeEntryRouter.patch(
+    "/end/:id",
+    validator(TimeEntryValidator.endTimeEntrySchema),
+    TimeEntryController.endTimeEntry
+)

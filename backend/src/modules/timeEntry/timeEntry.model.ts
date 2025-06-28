@@ -8,7 +8,7 @@ const TimeEntrySchema = new Schema<ITimeEntry>(
             required: true,
         },
         startedAt: { type: Date, required: true },
-        endedAt: { type: Date, required: true },
+        endedAt: { type: Date },
         project: {
             type: Schema.Types.ObjectId,
             ref: "Project",

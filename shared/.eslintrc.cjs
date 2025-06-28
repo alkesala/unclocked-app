@@ -1,5 +1,5 @@
 module.exports = {
-  root: true, // This tells ESLint to stop looking for config files in parent directories
+  root: true,
   env: {
     node: true,
   },
@@ -15,7 +15,6 @@ module.exports = {
     '@typescript-eslint',
   ],
   rules: {
-    // Add any specific rules for your shared package here
     'no-unused-vars': 'warn',
   },
 };
