@@ -7,7 +7,7 @@ import {
 
 export type CreateTimeEntryInput = z.infer<
     typeof TimeEntryValidator.createTimeEntrySchema
->
+>["body"]
 
 export type TimeEntryFilter = z.infer<typeof TimeEntryFilterSchema> & {
     accountId: string

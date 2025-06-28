@@ -8,16 +8,16 @@ import {
 } from "./timeEntry.types"
 
 const create = async (input: CreateTimeEntryInput) => {
-    const project = await ProjectModel.findById(input.body.project)
+    const project = await ProjectModel.findById(input.project)
 
     if (!project) {
         throw new Error("Project not found")
     }
 
-    const effectiveHourlyRate = input.body.hourlyRate ?? project.hourlyRate ?? 0
+    const effectiveHourlyRate = input.hourlyRate ?? project.hourlyRate ?? 0
 
     return TimeEntryModel.create({
-        ...input.body,
+        ...input,
         hourlyRate: effectiveHourlyRate,
     })
 }
