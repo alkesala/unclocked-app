@@ -1,7 +1,7 @@
 import validator from "@/middleware/validator"
 import { Router } from "express"
 import { ReportController } from "./reports.controller"
-import { ReportsValidator } from "./reports.validator"
+import { ReportsValidator } from "@shared/types/report"
 
 export const ReportRouter = Router()
 

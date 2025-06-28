@@ -3,7 +3,7 @@ import {
     CreateReportInput,
     DeleteReportInput,
     ReportFilter,
-} from "./report.types"
+} from "@shared/types/report"
 import { ReportModel } from "./reports.model"
 
 // Basic CRUD operations for reports
