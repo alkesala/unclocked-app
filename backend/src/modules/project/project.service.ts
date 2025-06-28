@@ -5,7 +5,7 @@ import {
     DeleteProjectInput,
     ProjectsFilter,
     UpdateProjectInput,
-} from "./project.types"
+} from "@shared/types/project"
 
 const createProject = async (input: CreateProjectInput) => {
     return ProjectModel.create(input)

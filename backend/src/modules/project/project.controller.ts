@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { ProjectService } from "./project.service"
-import { ProjectFilterSchema } from "./project.validator"
+import { ProjectFilterSchema } from "@shared/types/project"
 
 const createProject = async (
     req: Request,

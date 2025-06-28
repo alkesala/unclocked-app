@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { TimeEntryService } from "./timeEntry.service"
-import { TimeEntryFilterSchema } from "./timeEntry.validator"
+import { TimeEntryFilterSchema } from "@shared/types/timeEntry"
 
 const createTimeEntry = async (
     req: Request,

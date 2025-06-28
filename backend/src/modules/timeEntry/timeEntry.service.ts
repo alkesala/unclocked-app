@@ -6,8 +6,7 @@ import {
     DeleteTimeEntryInput,
     EndTimeEntryInput,
     TimeEntryFilter,
-} from "./timeEntry.types"
-
+} from "@shared/types/timeEntry"
 const create = async (input: CreateTimeEntryInput) => {
     const project = await ProjectModel.findById(input.project)
 

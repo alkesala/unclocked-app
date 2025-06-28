@@ -12,7 +12,9 @@ const validator = (
                 query: req.query as unknown,
                 params: req.params as unknown,
             })
+
             req.body = parsed.body
+
             req.params = parsed.params
 
             return next()
