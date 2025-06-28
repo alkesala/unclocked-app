@@ -25,7 +25,7 @@ yarn-error.log*
 .idea/
 *.swp
 *.swo
-
+.eslintcache
 .DS_Store
 Thumbs.db
 
