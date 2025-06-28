@@ -8,15 +8,11 @@
         "@types/mongoose": "^5.11.97",
         "@types/node": "^22.15.18",
         "@types/winston": "^2.4.4",
-        "@typescript-eslint/eslint-plugin": "^8.35.0",
-        "@typescript-eslint/parser": "^8.35.0",
-        "eslint": "^9.30.0",
         "nodemon": "^3.1.10",
         "prettier": "^3.5.3",
         "ts-node": "^10.9.2",
         "tsconfig-paths": "^4.2.0",
-        "typescript": "^5.8.3",
-        "typescript-eslint": "^8.33.1"
+        "typescript": "^5.8.3"
     },
     "dependencies": {
         "@unclocked-app/shared": "workspace:^",
@@ -32,7 +28,6 @@
         "dev": "nodemon --require tsconfig-paths/register --exec ts-node src/index.ts",
         "build": "tsc",
         "start": "node dist/index.js",
-        "lint": "eslint . --ext .ts",
         "format": "prettier --write ."
     }
 }
