@@ -2,6 +2,7 @@ import {
     CreateTimeEntryInput,
     DeleteTimeEntryInput,
     EndTimeEntryInput,
+    StartTimeEntryInput,
     TimeEntryFilter,
 } from "@shared/types/timeEntry"
 import { Types } from "mongoose"
@@ -20,6 +21,33 @@ const create = async (input: CreateTimeEntryInput) => {
         ...input,
         hourlyRate: effectiveHourlyRate,
     })
+}
+
+const startTimeEntry = async (
+    input: StartTimeEntryInput,
+    accountId: string
+) => {
+    const existingActiveTimeEntry = await TimeEntryModel.findOne({
+        account: new Types.ObjectId(accountId),
+        endedAt: { $exists: false },
+    })
+
+    if (existingActiveTimeEntry) {
+        throw new Error("You have an active time entry")
+    }
+    const project = await ProjectModel.findById(input.project)
+    if (!project) {
+        throw new Error("Project not found")
+    }
+
+    const timer = await TimeEntryModel.create({
+        startedAt: new Date(),
+        account: new Types.ObjectId(accountId),
+        project: new Types.ObjectId(input.project),
+        note: input.note,
+        hourlyRate: project.hourlyRate ?? 0,
+    })
+    return timer
 }
 
 const endTimeEntry = async (input: EndTimeEntryInput, accountId: string) => {
@@ -79,4 +107,5 @@ export const TimeEntryService = {
     deleteById,
     getAllEntries,
     endTimeEntry,
+    startTimeEntry,
 }
