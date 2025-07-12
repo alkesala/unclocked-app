@@ -105,6 +105,34 @@ const endTimeEntry = async (
     }
 }
 
+const getActiveTimer = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        if (!req.accountId) {
+            res.status(StatusCodes.UNAUTHORIZED).json({
+                error: "Unauthorized",
+            })
+            return
+        }
+
+        const activeTimer = await TimeEntryService.getActiveTimer(req.accountId)
+
+        if (!activeTimer) {
+            res.status(StatusCodes.NOT_FOUND).json({
+                error: "No active timer found",
+            })
+            return
+        }
+
+        res.status(StatusCodes.OK).json({ data: activeTimer })
+    } catch (err) {
+        next(err)
+    }
+}
+
 const getEntries = async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!req.accountId) {
@@ -130,4 +158,5 @@ export const TimeEntryController = {
     getEntries,
     endTimeEntry,
     startTimeEntry,
+    getActiveTimer,
 }

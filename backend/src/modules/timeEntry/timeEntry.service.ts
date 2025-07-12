@@ -102,10 +102,33 @@ const deleteById = async (input: DeleteTimeEntryInput) => {
     }).exec()
 }
 
+const getActiveTimer = async (accountId: string) => {
+    const accountObjectId = new Types.ObjectId(accountId)
+
+    const activeTimer = await TimeEntryModel.findOne({
+        account: accountObjectId,
+        endedAt: { $exists: false },
+    })
+
+    if (!activeTimer) {
+        return null
+    }
+
+    // Calculate current duration for active timer
+    const currentDuration =
+        (Date.now() - activeTimer.startedAt.getTime()) / (1000 * 60 * 60)
+
+    return {
+        ...activeTimer.toJSON(),
+        currentDuration: Math.round(currentDuration * 100) / 100,
+    }
+}
+
 export const TimeEntryService = {
     create,
     deleteById,
     getAllEntries,
     endTimeEntry,
     startTimeEntry,
+    getActiveTimer,
 }
