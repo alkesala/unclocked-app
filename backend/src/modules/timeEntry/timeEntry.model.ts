@@ -9,7 +9,7 @@ const TimeEntrySchema = new Schema<ITimeEntry>(
         },
         startedAt: { type: Date, required: true },
         endedAt: { type: Date },
-        duration: { type: Number },
+        duration: { type: Number, default: undefined },
         project: {
             type: Schema.Types.ObjectId,
             ref: "Project",
@@ -35,11 +35,11 @@ export const TimeEntryModel = model<ITimeEntry>("TimeEntry", TimeEntrySchema)
 interface ITimeEntry {
     readonly account: Types.ObjectId
     startedAt: Date
-    endedAt: Date
+    endedAt?: Date
     readonly project: Types.ObjectId
     note?: string
     hourlyRate: number
     readonly createdAt: Date
-    duration: number
+    duration?: number
     readonly updatedAt: Date
 }
