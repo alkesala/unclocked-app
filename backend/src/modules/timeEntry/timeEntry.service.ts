@@ -60,10 +60,16 @@ const endTimeEntry = async (input: EndTimeEntryInput, accountId: string) => {
     if (!existingTimeEntry) {
         throw new Error("Time entry not found")
     }
+
+    const endedAtDate = new Date(input.body.endedAt)
+    const startedAtDate = new Date(existingTimeEntry.startedAt)
+
+    if (endedAtDate <= startedAtDate) {
+        throw new Error("End time must be after start time")
+    }
+
     const duration = Math.round(
-        (new Date(input.body.endedAt).getTime() -
-            new Date(existingTimeEntry.startedAt).getTime()) /
-            (1000 * 60 * 60)
+        (endedAtDate.getTime() - startedAtDate.getTime()) / (1000 * 60 * 60)
     )
     return TimeEntryModel.findOneAndUpdate(
         { _id: input.params.id, account: accountObjectId },
