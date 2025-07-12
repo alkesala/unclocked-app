@@ -10,7 +10,6 @@ const getAllEntriesSchema = z.object({
 
 const startTimeEntrySchema = z.object({
   body: z.object({
-    startedAt: dateString,
     project: objectId,
     note: z.string().optional(),
     hourlyRate: z.number().optional(),
@@ -71,3 +70,7 @@ export type DeleteTimeEntryInput = {
 export type EndTimeEntryInput = z.infer<
   typeof TimeEntryValidator.endTimeEntrySchema
 >
+
+export type StartTimeEntryInput = z.infer<
+  typeof TimeEntryValidator.startTimeEntrySchema
+>["body"]
