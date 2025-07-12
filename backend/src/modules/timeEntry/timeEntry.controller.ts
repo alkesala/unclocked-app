@@ -1,7 +1,7 @@
+import { TimeEntryFilterSchema } from "@shared/types/timeEntry"
 import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { TimeEntryService } from "./timeEntry.service"
-import { TimeEntryFilterSchema } from "@shared/types/timeEntry"
 
 const createTimeEntry = async (
     req: Request,
@@ -55,6 +55,27 @@ const deleteTimeEntry = async (
         next(err)
     }
 }
+
+const startTimeEntry = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        if (!req.accountId) {
+            res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" })
+            return
+        }
+        const started = await TimeEntryService.startTimeEntry(
+            req.body,
+            req.accountId
+        )
+        res.status(StatusCodes.CREATED).json({ data: started })
+    } catch (err) {
+        next(err)
+    }
+}
+
 const endTimeEntry = async (
     req: Request<{ id: string }>,
     res: Response,
@@ -108,4 +129,5 @@ export const TimeEntryController = {
     deleteTimeEntry,
     getEntries,
     endTimeEntry,
+    startTimeEntry,
 }
