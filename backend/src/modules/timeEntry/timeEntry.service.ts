@@ -1,12 +1,12 @@
-import { Types } from "mongoose"
-import { ProjectModel } from "../project/project.model"
-import { TimeEntryModel } from "./timeEntry.model"
 import {
     CreateTimeEntryInput,
     DeleteTimeEntryInput,
     EndTimeEntryInput,
     TimeEntryFilter,
 } from "@shared/types/timeEntry"
+import { Types } from "mongoose"
+import { ProjectModel } from "../project/project.model"
+import { TimeEntryModel } from "./timeEntry.model"
 const create = async (input: CreateTimeEntryInput) => {
     const project = await ProjectModel.findById(input.project)
 
@@ -24,9 +24,22 @@ const create = async (input: CreateTimeEntryInput) => {
 
 const endTimeEntry = async (input: EndTimeEntryInput, accountId: string) => {
     const accountObjectId = new Types.ObjectId(accountId)
+    const existingTimeEntry = await TimeEntryModel.findOne({
+        _id: input.params.id,
+        account: accountObjectId,
+    })
+
+    if (!existingTimeEntry) {
+        throw new Error("Time entry not found")
+    }
+    const duration = Math.round(
+        (new Date(input.body.endedAt).getTime() -
+            new Date(existingTimeEntry.startedAt).getTime()) /
+            (1000 * 60 * 60)
+    )
     return TimeEntryModel.findOneAndUpdate(
         { _id: input.params.id, account: accountObjectId },
-        { $set: { endedAt: input.body.endedAt } },
+        { $set: { endedAt: input.body.endedAt, duration: duration } },
         { new: true }
     )
 }
