@@ -1,6 +1,6 @@
-import { dateString, objectId } from "@/../backend/src/utils/zodHelper"
+import { PaginationQuerySchema } from "@backend/types/request-filters"
+import { dateString, objectId } from "@backend/utils/zodHelper"
 import { z } from "zod"
-import { PaginationQuerySchema } from "../../../backend/src/types/request-filters"
 // Pagination included
 const getAllEntriesSchema = z.object({
   query: PaginationQuerySchema.extend({
