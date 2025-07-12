@@ -9,6 +9,7 @@ const TimeEntrySchema = new Schema<ITimeEntry>(
         },
         startedAt: { type: Date, required: true },
         endedAt: { type: Date },
+        duration: { type: Number },
         project: {
             type: Schema.Types.ObjectId,
             ref: "Project",
@@ -39,5 +40,6 @@ interface ITimeEntry {
     note?: string
     hourlyRate: number
     readonly createdAt: Date
+    duration: number
     readonly updatedAt: Date
 }
