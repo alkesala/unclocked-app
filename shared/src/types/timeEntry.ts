@@ -8,6 +8,15 @@ const getAllEntriesSchema = z.object({
   }),
 })
 
+const startTimeEntrySchema = z.object({
+  body: z.object({
+    startedAt: dateString,
+    project: objectId,
+    note: z.string().optional(),
+    hourlyRate: z.number().optional(),
+  }),
+})
+
 // Using zodHleper for objectId and dateString for easier consistency
 const createTimeEntrySchema = z.object({
   body: z.object({
@@ -43,6 +52,7 @@ export const TimeEntryValidator = {
   deleteByIdSchema,
   createTimeEntrySchema,
   endTimeEntrySchema,
+  startTimeEntrySchema,
 }
 
 export type CreateTimeEntryInput = z.infer<
