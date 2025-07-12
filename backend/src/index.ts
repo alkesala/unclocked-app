@@ -1,6 +1,8 @@
+import { specs } from "@/config/swagger"
 import { fakeOAuth } from "@/middleware/fake-oauth"
 import { requestLogger } from "@/middleware/request-logger"
 import { unknownEndpoint } from "@/middleware/unknown-endpoint"
+import { ProjectRouter } from "@/modules/project/project.route"
 import { ReportRouter } from "@/modules/reports/reports.route"
 import { statusRouter } from "@/modules/status/status.route"
 import { TimeEntryRouter } from "@/modules/timeEntry/timeEntry.route"
@@ -10,8 +12,6 @@ import dotenv from "dotenv"
 import express from "express"
 import http from "http"
 import swaggerUi from "swagger-ui-express"
-import { ProjectRouter } from "./modules/project/project.route"
-import { specs } from "./config/swagger"
 dotenv.config()
 
 const app = express()
@@ -20,10 +20,14 @@ app.use(express.json())
 app.use(requestLogger)
 
 // Swagger documentation
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs, {
-  customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: "Unclocked App API Documentation"
-}))
+app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(specs, {
+        customCss: ".swagger-ui .topbar { display: none }",
+        customSiteTitle: "Unclocked App API Documentation",
+    })
+)
 
 // use env
 const PORT = process.env.PORT

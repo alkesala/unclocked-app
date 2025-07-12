@@ -1,3 +1,5 @@
+import { ReportModel } from "@/modules/reports/reports.model"
+import { TimeEntryModel } from "@/modules/timeEntry/timeEntry.model"
 import {
     CreateProjectInput,
     DeleteProjectInput,
@@ -5,8 +7,6 @@ import {
     UpdateProjectInput,
 } from "@shared/types/project"
 import { Types } from "mongoose"
-import { ReportModel } from "../reports/reports.model"
-import { TimeEntryModel } from "../timeEntry/timeEntry.model"
 import { ProjectModel } from "./project.model"
 
 const createProject = async (input: CreateProjectInput) => {

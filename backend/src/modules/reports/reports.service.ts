@@ -1,9 +1,9 @@
-import { Types } from "mongoose"
 import {
     CreateReportInput,
     DeleteReportInput,
     ReportFilter,
 } from "@shared/types/report"
+import { Types } from "mongoose"
 import { ReportModel } from "./reports.model"
 
 // Basic CRUD operations for reports

@@ -1,3 +1,4 @@
+import { ProjectModel } from "@/modules/project/project.model"
 import {
     CreateTimeEntryInput,
     DeleteTimeEntryInput,
@@ -6,7 +7,6 @@ import {
     TimeEntryFilter,
 } from "@shared/types/timeEntry"
 import { Types } from "mongoose"
-import { ProjectModel } from "../project/project.model"
 import { TimeEntryModel } from "./timeEntry.model"
 const create = async (input: CreateTimeEntryInput) => {
     const project = await ProjectModel.findById(input.project)
