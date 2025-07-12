@@ -1,11 +1,13 @@
-import { Types } from "mongoose"
-import { ProjectModel } from "./project.model"
 import {
     CreateProjectInput,
     DeleteProjectInput,
     ProjectsFilter,
     UpdateProjectInput,
 } from "@shared/types/project"
+import { Types } from "mongoose"
+import { ReportModel } from "../reports/reports.model"
+import { TimeEntryModel } from "../timeEntry/timeEntry.model"
+import { ProjectModel } from "./project.model"
 
 const createProject = async (input: CreateProjectInput) => {
     return ProjectModel.create(input)
@@ -49,8 +51,29 @@ const updateProjectById = async (
 const deleteProjectById = async (input: DeleteProjectInput) => {
     const { id, accountId } = input
     const accountObjectId = new Types.ObjectId(accountId)
+    const projectObjectId = new Types.ObjectId(id)
+
+    // Check for related time entries
+    const timeEntryCount = await TimeEntryModel.countDocuments({
+        project: projectObjectId,
+        account: accountObjectId,
+    })
+
+    // Check for related reports
+    const reportCount = await ReportModel.countDocuments({
+        project: projectObjectId,
+        account: accountObjectId,
+    })
+
+    if (timeEntryCount > 0 || reportCount > 0) {
+        throw new Error(
+            `Cannot delete project. It has ${timeEntryCount} time entries and ${reportCount} reports. ` +
+                `Delete all related records first, or delete the entire account to remove all data.`
+        )
+    }
+
     return ProjectModel.findOneAndDelete({
-        _id: id,
+        _id: projectObjectId,
         account: accountObjectId,
     }).exec()
 }
