@@ -315,12 +315,6 @@ TimeEntryRouter.delete(
  *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/timeEntryId'
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/EndTimeEntryRequest'
  *     responses:
  *       200:
  *         description: Timer ended successfully

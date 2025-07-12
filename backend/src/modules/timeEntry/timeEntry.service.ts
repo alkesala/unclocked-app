@@ -43,7 +43,7 @@ const startTimeEntry = async (
     const timer = await TimeEntryModel.create({
         startedAt: new Date(),
         account: new Types.ObjectId(accountId),
-        project: new Types.ObjectId(input.project),
+        project: new Types.ObjectId(project._id),
         note: input.note,
         hourlyRate: project.hourlyRate ?? 0,
     })
@@ -52,6 +52,8 @@ const startTimeEntry = async (
 
 const endTimeEntry = async (input: EndTimeEntryInput, accountId: string) => {
     const accountObjectId = new Types.ObjectId(accountId)
+    const endedAtDate = new Date()
+
     const existingTimeEntry = await TimeEntryModel.findOne({
         _id: input.params.id,
         account: accountObjectId,
@@ -61,19 +63,30 @@ const endTimeEntry = async (input: EndTimeEntryInput, accountId: string) => {
         throw new Error("Time entry not found")
     }
 
-    const endedAtDate = new Date(input.body.endedAt)
-    const startedAtDate = new Date(existingTimeEntry.startedAt)
-
-    if (endedAtDate <= startedAtDate) {
-        throw new Error("End time must be after start time")
+    if (existingTimeEntry.endedAt) {
+        throw new Error("Time entry has already been ended")
     }
 
-    const duration = Math.round(
+    const startedAtDate = existingTimeEntry.startedAt
+
+    // This check is a safeguard against clock sync issues
+    if (endedAtDate < startedAtDate) {
+        throw new Error(
+            "System clock error. The end time is earlier than the start time."
+        )
+    }
+
+    const duration =
         (endedAtDate.getTime() - startedAtDate.getTime()) / (1000 * 60 * 60)
-    )
+
     return TimeEntryModel.findOneAndUpdate(
         { _id: input.params.id, account: accountObjectId },
-        { $set: { endedAt: input.body.endedAt, duration: duration } },
+        {
+            $set: {
+                endedAt: endedAtDate,
+                duration: Math.round(duration * 10000) / 10000,
+            },
+        },
         { new: true }
     )
 }

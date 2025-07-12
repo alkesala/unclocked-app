@@ -37,9 +37,7 @@ const endTimeEntrySchema = z.object({
   params: z.object({
     id: z.string().length(24),
   }),
-  body: z.object({
-    endedAt: dateString,
-  }),
+  body: z.object({}).optional(),
 })
 
 export const TimeEntryFilterSchema = PaginationQuerySchema.extend({
