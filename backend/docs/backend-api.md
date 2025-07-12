@@ -8,6 +8,18 @@ The Unclocked App Backend API provides a RESTful interface for time tracking, pr
 **Content-Type:** `application/json`  
 **Authentication:** OAuth-based (currently using fake OAuth middleware for development)
 
+### Interactive Documentation
+
+For an interactive API documentation experience, visit the Swagger UI at:
+- **Development:** `http://localhost:3000/api-docs`
+- **Production:** `https://your-domain.com/api-docs`
+
+The Swagger interface allows you to:
+- Test API endpoints directly in the browser
+- View request/response schemas
+- Configure authentication
+- See real-time validation
+
 ## Table of Contents
 
 - [Authentication](#authentication)
