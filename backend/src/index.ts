@@ -19,7 +19,7 @@ app.use(requestLogger)
 
 // use env
 const PORT = process.env.PORT
-
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 const server = http.createServer(app)
 
 // Routes go down here;
@@ -36,6 +36,12 @@ app.use("/api/v1", apiRouter)
 app.use(unknownEndpoint)
 
 connectDB()
-server.listen(PORT, () => {
-    logger.info(`Server running on port: ${PORT}`)
-})
+    .then(() => {
+        server.listen(PORT, () => {
+            logger.info(`Server running on port: ${PORT}`)
+        })
+    })
+    .catch((err) => {
+        logger.error("Failed to connect to database:", err)
+        process.exit(1)
+    })
