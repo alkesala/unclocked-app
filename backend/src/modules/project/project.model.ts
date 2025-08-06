@@ -20,6 +20,7 @@ const ProjectSchema = new Schema<IProject>(
         timestamps: true,
         toJSON: {
             transform: (document, returnedObject) => {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                 returnedObject.id = returnedObject._id.toString()
                 delete returnedObject._id
                 delete returnedObject.__v
