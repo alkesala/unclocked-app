@@ -21,7 +21,8 @@ const TimeEntrySchema = new Schema<ITimeEntry>(
     {
         timestamps: true,
         toJSON: {
-            transform: (document, returnedObject) => {
+            //eslint-disable-next-line
+            transform: (document, returnedObject: any) => {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                 returnedObject.id = returnedObject._id.toString()
                 delete returnedObject._id
