@@ -1,10 +1,8 @@
 import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
-import { AnyZodObject, ZodEffects, ZodError } from "zod"
+import { z, ZodError } from "zod"
 
-const validator = (
-    schema: AnyZodObject | ZodEffects<ZodEffects<AnyZodObject>>
-) => {
+const validator = <T extends z.ZodType>(schema: T) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
             const parsed = await schema.parseAsync({
@@ -12,15 +10,16 @@ const validator = (
                 query: req.query as unknown,
                 params: req.params as unknown,
             })
-
-            req.body = parsed.body
-
-            req.params = parsed.params
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const result = parsed as any
+            if (result.body !== undefined) req.body = result.body
+            if (result.params !== undefined) req.params = result.params
+            if (result.query !== undefined) req.query = result.query
 
             return next()
         } catch (error) {
             if (error instanceof ZodError) {
-                res.status(StatusCodes.BAD_REQUEST).json({
+                return res.status(StatusCodes.BAD_REQUEST).json({
                     status: StatusCodes.BAD_REQUEST,
                     message: "request validation failed",
                     error,
