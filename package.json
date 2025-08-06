@@ -26,9 +26,9 @@
     "eslint": "^9.32.0",
     "eslint-plugin-react": "^7.37.5",
     "husky": "^9.1.7",
-    "lint-staged": "^16.1.2",
+    "lint-staged": "^16.1.4",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.39.0",
-    "typescript-language-server": "^4.3.4"
+    "typescript-language-server": "^4.4.0"
   }
 }
