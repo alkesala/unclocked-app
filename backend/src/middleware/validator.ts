@@ -3,7 +3,11 @@ import { StatusCodes } from "http-status-codes"
 import { z, ZodError } from "zod"
 
 const validator = <T extends z.ZodType>(schema: T) => {
-    return async (req: Request, res: Response, next: NextFunction) => {
+    return async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> => {
         try {
             const parsed = await schema.parseAsync({
                 body: req.body as unknown,
@@ -16,10 +20,10 @@ const validator = <T extends z.ZodType>(schema: T) => {
             if (result.params !== undefined) req.params = result.params
             if (result.query !== undefined) req.query = result.query
 
-            return next()
+            next()
         } catch (error) {
             if (error instanceof ZodError) {
-                return res.status(StatusCodes.BAD_REQUEST).json({
+                res.status(StatusCodes.BAD_REQUEST).json({
                     status: StatusCodes.BAD_REQUEST,
                     message: "request validation failed",
                     error,
