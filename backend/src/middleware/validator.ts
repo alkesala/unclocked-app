@@ -2,7 +2,14 @@ import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { z, ZodError } from "zod"
 
-const validator = <T extends z.ZodType>(schema: T) => {
+// Documentation purpose | not needed
+type validator = {
+    body?: unknown
+    query?: unknown
+    params?: unknown
+}
+
+const validator = <T extends z.ZodType<validator>>(schema: T) => {
     return async (
         req: Request,
         res: Response,
@@ -18,7 +25,6 @@ const validator = <T extends z.ZodType>(schema: T) => {
             const result = parsed as any
             if (result.body !== undefined) req.body = result.body
             if (result.params !== undefined) req.params = result.params
-            if (result.query !== undefined) req.query = result.query
 
             next()
         } catch (error) {
@@ -28,6 +34,7 @@ const validator = <T extends z.ZodType>(schema: T) => {
                     message: "request validation failed",
                     error,
                 })
+                return
             }
             return next(error)
         }
