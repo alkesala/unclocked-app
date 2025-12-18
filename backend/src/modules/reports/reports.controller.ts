@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { ReportService } from "./reports.service"
-import { ReportFilterSchema } from "@shared/types/report"
+import { ReportFilterSchema } from "@unclocked-app/shared"
 
 const createReport = async (
     req: Request,

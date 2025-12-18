@@ -1,7 +1,7 @@
 import validator from "@/middleware/validator"
 import { Router } from "express"
 import { ProjectController } from "./project.controller"
-import { ProjectValidator } from "@shared/types/project"
+import { ProjectValidator } from "@unclocked-app/shared"
 
 export const ProjectRouter = Router()
 

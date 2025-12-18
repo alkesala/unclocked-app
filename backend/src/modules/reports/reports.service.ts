@@ -3,7 +3,7 @@ import {
     CreateReportInput,
     DeleteReportInput,
     ReportFilter,
-} from "@shared/types/report"
+} from "@unclocked-app/shared"
 import { ReportModel } from "./reports.model"
 
 // Basic CRUD operations for reports

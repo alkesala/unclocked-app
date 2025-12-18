@@ -1402,6 +1402,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@unclocked-app/shared@workspace:shared"
   dependencies:
+    "@types/mongoose": "npm:^5.11.97"
+    mongoose: "npm:^8.14.3"
     typescript: "npm:^5.9.2"
     zod: "npm:^4.0.15"
   languageName: unknown

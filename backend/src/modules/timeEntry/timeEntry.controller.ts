@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { TimeEntryService } from "./timeEntry.service"
-import { TimeEntryFilterSchema } from "@shared/types/timeEntry"
+import { TimeEntryFilterSchema } from "@unclocked-app/shared"
 
 const createTimeEntry = async (
     req: Request,

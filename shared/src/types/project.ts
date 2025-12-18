@@ -1,4 +1,4 @@
-import { PaginationQuerySchema } from "../../../backend/src/types/request-filters";
+import { PaginationQuerySchema } from "./request-filters";
 import { z } from "zod";
 const createProjectSchema = z.object({
   body: z.object({

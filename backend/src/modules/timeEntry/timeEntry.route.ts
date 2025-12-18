@@ -1,7 +1,7 @@
 import validator from "@/middleware/validator"
 import { Router } from "express"
 import { TimeEntryController } from "./timeEntry.controller"
-import { TimeEntryValidator } from "@shared/types/timeEntry"
+import { TimeEntryValidator } from "@unclocked-app/shared"
 
 export const TimeEntryRouter = Router()
 

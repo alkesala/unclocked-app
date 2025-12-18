@@ -8,9 +8,11 @@
     "dev": "tsc --watch"
   },
   "dependencies": {
+    "mongoose": "^8.14.3",
     "zod": "^4.0.15"
   },
   "devDependencies": {
+    "@types/mongoose": "^5.11.97",
     "typescript": "^5.9.2"
   }
 }
