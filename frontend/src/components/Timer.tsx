@@ -49,7 +49,23 @@ export const Timer = () => {
     setIsRunning(!isRunning)
   }
 
-  const handleReset = () => {
+  const handleSave = () => {
+    // TODO: Save to backend
+    const entry = {
+      projectId: selectedProject,
+      description,
+      duration: milliseconds,
+      timestamp: new Date().toISOString(),
+    }
+    console.log("Saving time entry:", entry)
+
+    // Reset after saving
+    setMilliseconds(0)
+    setDescription("")
+    setSelectedProject("")
+  }
+
+  const handleDiscard = () => {
     setIsRunning(false)
     setMilliseconds(0)
     setDescription("")
@@ -67,18 +83,28 @@ export const Timer = () => {
           </div>
 
           <div className="flex gap-2">
-            <Button
-              size="lg"
-              variant={isRunning ? "destructive" : "default"}
-              onClick={handleStartStop}
-              className="min-w-32"
-            >
-              {isRunning ? "Stop" : "Start"}
-            </Button>
-
-            {milliseconds > 0 && !isRunning && (
-              <Button size="lg" variant="outline" onClick={handleReset}>
-                Reset
+            {milliseconds > 0 && !isRunning ? (
+              <>
+                <Button size="lg" onClick={handleSave} className="min-w-32">
+                  Save Entry
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={handleDiscard}
+                  className="min-w-32"
+                >
+                  Discard
+                </Button>
+              </>
+            ) : (
+              <Button
+                size="lg"
+                variant={isRunning ? "destructive" : "default"}
+                onClick={handleStartStop}
+                className="min-w-32"
+              >
+                {isRunning ? "Stop" : "Start"}
               </Button>
             )}
           </div>
