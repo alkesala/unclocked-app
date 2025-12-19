@@ -9,6 +9,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog"
 import { formatDuration } from "../lib/utils"
 
 // Mock projects - replace with actual data later
@@ -24,6 +33,7 @@ export const Timer = () => {
   const [milliseconds, setMilliseconds] = useState(0)
   const [selectedProject, setSelectedProject] = useState("")
   const [description, setDescription] = useState("")
+  const [showAlert, setShowAlert] = useState(false)
 
   useEffect(() => {
     let interval: number | undefined
@@ -43,7 +53,7 @@ export const Timer = () => {
 
   const handleStartStop = () => {
     if (!isRunning && !selectedProject) {
-      alert("Please select a project first")
+      setShowAlert(true)
       return
     }
     setIsRunning(!isRunning)
@@ -152,6 +162,22 @@ export const Timer = () => {
           </div>
         </div>
       </CardContent>
+
+      <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Project Required</AlertDialogTitle>
+            <AlertDialogDescription>
+              Please select a project before starting the timer.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setShowAlert(false)}>
+              OK
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   )
 }
