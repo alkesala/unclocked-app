@@ -61,8 +61,35 @@ export const Timer = () => {
         <CardTitle>Time Tracker</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col gap-6">
-          <div className="grid gap-4">
+        <div className="flex flex-col items-center gap-6">
+          <div className="text-6xl font-bold tabular-nums">
+            {formatDuration(milliseconds)}
+          </div>
+
+          <div className="flex gap-2">
+            <Button
+              size="lg"
+              variant={isRunning ? "destructive" : "default"}
+              onClick={handleStartStop}
+              className="min-w-32"
+            >
+              {isRunning ? "Stop" : "Start"}
+            </Button>
+
+            {milliseconds > 0 && !isRunning && (
+              <Button size="lg" variant="outline" onClick={handleReset}>
+                Reset
+              </Button>
+            )}
+          </div>
+
+          {isRunning && (
+            <div className="text-sm text-muted-foreground animate-pulse">
+              Timer is running...
+            </div>
+          )}
+
+          <div className="w-full max-w-md grid gap-4 pt-4 border-t">
             <div>
               <label className="text-sm font-medium mb-2 block">
                 Project
@@ -96,35 +123,6 @@ export const Timer = () => {
                 disabled={isRunning}
               />
             </div>
-          </div>
-
-          <div className="flex flex-col items-center gap-6 py-4">
-            <div className="text-6xl font-bold tabular-nums">
-              {formatDuration(milliseconds)}
-            </div>
-
-            <div className="flex gap-2">
-              <Button
-                size="lg"
-                variant={isRunning ? "destructive" : "default"}
-                onClick={handleStartStop}
-                className="min-w-32"
-              >
-                {isRunning ? "Stop" : "Start"}
-              </Button>
-
-              {milliseconds > 0 && !isRunning && (
-                <Button size="lg" variant="outline" onClick={handleReset}>
-                  Reset
-                </Button>
-              )}
-            </div>
-
-            {isRunning && (
-              <div className="text-sm text-muted-foreground animate-pulse">
-                Timer is running...
-              </div>
-            )}
           </div>
         </div>
       </CardContent>
