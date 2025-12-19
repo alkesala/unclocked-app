@@ -1,4 +1,3 @@
-import { Button } from "../components/ui/button"
 import {
   Card,
   CardDescription,
@@ -17,7 +16,7 @@ export const DashboardPage = () => {
           <Timer />
         </div>
 
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-1">
+        <div className="grid gap-4">
           <Card>
             <CardHeader>
               <CardDescription>Hours Today</CardDescription>
@@ -27,37 +26,10 @@ export const DashboardPage = () => {
 
           <Card>
             <CardHeader>
-              <CardDescription>Earnings Today</CardDescription>
-              <CardTitle className="text-3xl">$225</CardTitle>
+              <CardDescription>This Week</CardDescription>
+              <CardTitle className="text-3xl">18.5h</CardTitle>
             </CardHeader>
           </Card>
-        </div>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2 mb-6">
-        <Card>
-          <CardHeader>
-            <CardDescription>This Week</CardDescription>
-            <CardTitle className="text-3xl">18.5h</CardTitle>
-          </CardHeader>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardDescription>Week Earnings</CardDescription>
-            <CardTitle className="text-3xl">$925</CardTitle>
-          </CardHeader>
-        </Card>
-      </div>
-
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-4">Component Examples</h2>
-        <div className="flex gap-2">
-          <Button>Default</Button>
-          <Button variant="outline">Outline</Button>
-          <Button variant="secondary">Secondary</Button>
-          <Button variant="ghost">Ghost</Button>
-          <Button variant="destructive">Destructive</Button>
         </div>
       </div>
     </div>
