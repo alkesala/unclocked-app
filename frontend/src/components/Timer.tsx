@@ -95,8 +95,20 @@ export const Timer = () => {
           <div className="flex gap-2">
             {milliseconds > 0 && !isRunning ? (
               <>
-                <Button size="lg" onClick={handleSave} className="min-w-32">
-                  Save Entry
+                <Button
+                  size="lg"
+                  onClick={handleStartStop}
+                  className="min-w-32"
+                >
+                  Continue
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={handleSave}
+                  className="min-w-32"
+                >
+                  Save
                 </Button>
                 <Button
                   size="lg"
