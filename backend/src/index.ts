@@ -6,6 +6,7 @@ import { statusRouter } from "@/modules/status/status.route"
 import { TimeEntryRouter } from "@/modules/timeEntry/timeEntry.route"
 import { connectDB } from "@/utils/db"
 import { logger } from "@/utils/logger"
+import cors from "cors"
 import dotenv from "dotenv"
 import express from "express"
 import http from "http"
@@ -13,6 +14,15 @@ import { ProjectRouter } from "./modules/project/project.route"
 dotenv.config()
 
 const app = express()
+
+// CORS configuration
+app.use(
+    cors({
+        origin: process.env.FRONTEND_URL || "http://localhost:5173",
+        credentials: true,
+    })
+)
+
 app.use(fakeOAuth)
 app.use(express.json())
 app.use(requestLogger)
@@ -27,7 +37,7 @@ const apiRouter = express.Router()
 
 apiRouter.use(statusRouter)
 apiRouter.use("/project", ProjectRouter)
-apiRouter.use("/time", TimeEntryRouter)
+apiRouter.use(TimeEntryRouter)
 apiRouter.use("/reports", ReportRouter)
 
 app.use("/api/v1", apiRouter)
