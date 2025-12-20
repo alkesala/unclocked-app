@@ -6,6 +6,7 @@ import {
     DeleteTimeEntryInput,
     EndTimeEntryInput,
     TimeEntryFilter,
+    UpdateTimeEntryInput,
 } from "@unclocked-app/shared"
 const create = async (input: CreateTimeEntryInput) => {
     const project = await ProjectModel.findById(input.project)
@@ -61,9 +62,36 @@ const deleteById = async (input: DeleteTimeEntryInput) => {
     }).exec()
 }
 
+const updateTimeEntryById = async (
+    id: string,
+    input: Partial<UpdateTimeEntryInput>,
+    accountId: string
+) => {
+    const accountObjectId = new Types.ObjectId(accountId)
+
+    // If project is being updated, verify it exists
+    if (input.project) {
+        const project = await ProjectModel.findById(input.project)
+        if (!project) {
+            throw new Error("Project not found")
+        }
+        // Update hourlyRate if not explicitly provided
+        if (input.hourlyRate === undefined) {
+            input.hourlyRate = project.hourlyRate
+        }
+    }
+
+    return TimeEntryModel.findOneAndUpdate(
+        { _id: id, account: accountObjectId },
+        input,
+        { new: true }
+    )
+}
+
 export const TimeEntryService = {
     create,
     deleteById,
     getAllEntries,
     endTimeEntry,
+    updateTimeEntryById,
 }

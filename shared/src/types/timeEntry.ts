@@ -34,6 +34,19 @@ const endTimeEntrySchema = z.object({
   }),
 });
 
+const updateTimeEntrySchema = z.object({
+  params: z.object({
+    id: z.string().length(24),
+  }),
+  body: z.object({
+    startedAt: dateString.optional(),
+    endedAt: dateString.optional(),
+    project: objectId.optional(),
+    note: z.string().optional(),
+    hourlyRate: z.number().optional(),
+  }),
+});
+
 export const TimeEntryFilterSchema = PaginationQuerySchema.extend({
   project: objectId.optional(),
 });
@@ -43,6 +56,7 @@ export const TimeEntryValidator = {
   deleteByIdSchema,
   createTimeEntrySchema,
   endTimeEntrySchema,
+  updateTimeEntrySchema,
 };
 
 // Type after Zod preprocessing (used by backend)
@@ -71,3 +85,17 @@ export type DeleteTimeEntryInput = {
 export type EndTimeEntryInput = z.infer<
   typeof TimeEntryValidator.endTimeEntrySchema
 >;
+
+// Type after Zod preprocessing (used by backend)
+export type UpdateTimeEntryInput = z.infer<
+  typeof TimeEntryValidator.updateTimeEntrySchema
+>["body"];
+
+// Type before Zod preprocessing (raw JSON payload from frontend)
+export type UpdateTimeEntryPayload = {
+  project?: string;
+  startedAt?: string;
+  endedAt?: string;
+  note?: string;
+  hourlyRate?: number;
+};
