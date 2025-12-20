@@ -5,6 +5,7 @@ import {
   CardTitle,
 } from "../components/ui/card"
 import { Timer } from "../components/Timer"
+import { FloatingActionButton } from "../components/FloatingActionButton"
 
 export const DashboardPage = () => {
   return (
@@ -32,6 +33,8 @@ export const DashboardPage = () => {
           </Card>
         </div>
       </div>
+
+      <FloatingActionButton />
     </div>
   )
 }
