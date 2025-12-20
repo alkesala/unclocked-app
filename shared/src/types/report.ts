@@ -34,9 +34,18 @@ export const ReportsValidator = {
   deleteReportByIdSchema,
 };
 
+// Type after Zod preprocessing (used by backend)
 export type CreateReportInput = z.infer<
   typeof ReportsValidator.createReportSchema
 >;
+
+// Type before Zod preprocessing (raw JSON payload from frontend)
+export type CreateReportPayload = {
+  project: string;
+  rangeStart: string;
+  rangeEnd: string;
+  name: string;
+};
 
 export type ReportFilter = z.infer<typeof ReportFilterSchema> & {
   accountId: string;
