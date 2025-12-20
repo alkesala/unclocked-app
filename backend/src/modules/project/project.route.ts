@@ -28,14 +28,29 @@ ProjectRouter.post(
     validator(ProjectValidator.createProjectSchema),
     ProjectController.createProject
 )
+
+/** Update a project by ID
+ * * @route PATCH /api/v1/projects/:id
+ * * @param id - the ID of the project to update
+ * * @bodyParam name - the name of the project
+ * * @bodyParam description - the description of the project
+ * * @bodyParam hourlyRate - the hourly rate of the project
+ * * @bodyParam isActive - the active status of the project
+ * * @accountId - the account ID of the user making the request injected by the auth middleware
+ */
+ProjectRouter.patch(
+    "/:id",
+    validator(ProjectValidator.updateProjectSchema),
+    ProjectController.updateProjectById
+)
+
 /** Delete a project by ID
  * * @route DELETE /api/v1/projects/:id
  * * @param id - the ID of the project to delete
  * * @accountId - the account ID of the user making the request injected by the auth middleware
  */
-
-// ProjectRouter.delete(
-//     "/:id",
-//     validator(ProjectValidator.deleteProjectByIdSchema),
-//     ProjectController.deleteProjectById
-// )
+ProjectRouter.delete(
+    "/:id",
+    validator(ProjectValidator.deleteProjectByIdSchema),
+    ProjectController.deleteProjectById
+)
