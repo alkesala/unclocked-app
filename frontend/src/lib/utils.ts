@@ -25,3 +25,33 @@ export const formatCurrency = (amount: number): string => {
     currency: "USD",
   }).format(amount)
 }
+
+// Format ISO to readable date and time
+export const formatDateTime = (isoString: string): string => {
+  return new Date(isoString).toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  })
+}
+
+// Format just the time portion
+export const formatTime = (isoString: string): string => {
+  return new Date(isoString).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  })
+}
+
+// Format date to datetime-local input format (YYYY-MM-DDTHH:mm)
+export const formatToDateTimeLocal = (isoString: string): string => {
+  const date = new Date(isoString)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const day = String(date.getDate()).padStart(2, "0")
+  const hours = String(date.getHours()).padStart(2, "0")
+  const minutes = String(date.getMinutes()).padStart(2, "0")
+  return `${year}-${month}-${day}T${hours}:${minutes}`
+}
