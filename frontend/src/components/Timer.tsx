@@ -19,21 +19,19 @@ import {
   AlertDialogTitle,
 } from "./ui/alert-dialog"
 import { formatDuration } from "../lib/utils"
-
-// Mock projects - replace with actual data later
-const MOCK_PROJECTS = [
-  { id: "1", name: "Project Alpha" },
-  { id: "2", name: "Project Beta" },
-  { id: "3", name: "Client Website" },
-  { id: "4", name: "Internal Tools" },
-]
+import { useProjects } from "../hooks/useProjects"
+import { useCreateTimeEntry } from "../hooks/useTimeEntries"
 
 export const Timer = () => {
   const [isRunning, setIsRunning] = useState(false)
   const [milliseconds, setMilliseconds] = useState(0)
+  const [startTime, setStartTime] = useState<Date | null>(null)
   const [selectedProject, setSelectedProject] = useState("")
   const [description, setDescription] = useState("")
   const [showAlert, setShowAlert] = useState(false)
+
+  const { data: projectsData, isLoading: isLoadingProjects } = useProjects()
+  const createEntry = useCreateTimeEntry()
 
   useEffect(() => {
     let interval: number | undefined
@@ -56,23 +54,33 @@ export const Timer = () => {
       setShowAlert(true)
       return
     }
+    if (!isRunning) {
+      setStartTime(new Date())
+    }
     setIsRunning(!isRunning)
   }
 
   const handleSave = () => {
-    // TODO: Save to backend
-    const entry = {
-      projectId: selectedProject,
-      description,
-      duration: milliseconds,
-      timestamp: new Date().toISOString(),
-    }
-    console.log("Saving time entry:", entry)
+    if (!startTime || !selectedProject) return
 
-    // Reset after saving
-    setMilliseconds(0)
-    setDescription("")
-    setSelectedProject("")
+    const endTime = new Date()
+    createEntry.mutate(
+      {
+        project: selectedProject,
+        startedAt: startTime.toISOString(),
+        endedAt: endTime.toISOString(),
+        note: description || undefined,
+      },
+      {
+        onSuccess: () => {
+          // Reset after saving
+          setMilliseconds(0)
+          setStartTime(null)
+          setDescription("")
+          setSelectedProject("")
+        },
+      }
+    )
   }
 
   const handleDiscard = () => {
@@ -145,14 +153,14 @@ export const Timer = () => {
               <Select
                 value={selectedProject}
                 onValueChange={setSelectedProject}
-                disabled={isRunning}
+                disabled={isRunning || isLoadingProjects}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a project" />
+                  <SelectValue placeholder={isLoadingProjects ? "Loading projects..." : "Select a project"} />
                 </SelectTrigger>
                 <SelectContent>
-                  {MOCK_PROJECTS.map((project) => (
-                    <SelectItem key={project.id} value={project.id}>
+                  {projectsData?.data.map((project) => (
+                    <SelectItem key={project._id} value={project._id}>
                       {project.name}
                     </SelectItem>
                   ))}

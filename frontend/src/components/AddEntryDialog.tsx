@@ -16,15 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select"
-import { createTimeEntry } from "../api/timeEntry"
-
-// Mock projects - replace with actual data later
-const MOCK_PROJECTS = [
-  { id: "1", name: "Project Alpha" },
-  { id: "2", name: "Project Beta" },
-  { id: "3", name: "Client Website" },
-  { id: "4", name: "Internal Tools" },
-]
+import { useProjects } from "../hooks/useProjects"
+import { useCreateTimeEntry } from "../hooks/useTimeEntries"
 
 interface AddEntryDialogProps {
   open: boolean
@@ -96,8 +89,10 @@ export const AddEntryDialog = ({ open, onOpenChange }: AddEntryDialogProps) => {
   const [endedAt, setEndedAt] = useState(getDefaultEndTime())
   const [note, setNote] = useState("")
   const [isRunning, setIsRunning] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const { data: projectsData, isLoading: isLoadingProjects } = useProjects()
+  const createEntry = useCreateTimeEntry()
 
   // Reset form when dialog opens
   useEffect(() => {
@@ -151,25 +146,24 @@ export const AddEntryDialog = ({ open, onOpenChange }: AddEntryDialogProps) => {
       }
     }
 
-    setIsLoading(true)
-
-    try {
-      await createTimeEntry({
+    createEntry.mutate(
+      {
         project,
         startedAt,
         endedAt: isRunning ? undefined : endedAt,
         note: note || undefined,
-      })
-
-      // Success - close dialog
-      onOpenChange(false)
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to create time entry"
-      )
-    } finally {
-      setIsLoading(false)
-    }
+      },
+      {
+        onSuccess: () => {
+          onOpenChange(false)
+        },
+        onError: (err) => {
+          setError(
+            err instanceof Error ? err.message : "Failed to create time entry"
+          )
+        },
+      }
+    )
   }
 
   return (
@@ -187,13 +181,13 @@ export const AddEntryDialog = ({ open, onOpenChange }: AddEntryDialogProps) => {
             <label htmlFor="project" className="text-sm font-medium">
               Project <span className="text-destructive">*</span>
             </label>
-            <Select value={project} onValueChange={setProject}>
+            <Select value={project} onValueChange={setProject} disabled={isLoadingProjects}>
               <SelectTrigger id="project">
-                <SelectValue placeholder="Select a project" />
+                <SelectValue placeholder={isLoadingProjects ? "Loading projects..." : "Select a project"} />
               </SelectTrigger>
               <SelectContent>
-                {MOCK_PROJECTS.map((proj) => (
-                  <SelectItem key={proj.id} value={proj.id}>
+                {projectsData?.data.map((proj) => (
+                  <SelectItem key={proj._id} value={proj._id}>
                     {proj.name}
                   </SelectItem>
                 ))}
@@ -273,12 +267,12 @@ export const AddEntryDialog = ({ open, onOpenChange }: AddEntryDialogProps) => {
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              disabled={isLoading}
+              disabled={createEntry.isPending}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Creating..." : "Create Entry"}
+            <Button type="submit" disabled={createEntry.isPending}>
+              {createEntry.isPending ? "Creating..." : "Create Entry"}
             </Button>
           </DialogFooter>
         </form>
