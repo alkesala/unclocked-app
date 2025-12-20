@@ -1,11 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import type { CreateTimeEntryPayload } from '@unclocked-app/shared'
+import type { CreateTimeEntryPayload, UpdateTimeEntryPayload } from '@unclocked-app/shared'
 import {
   createTimeEntry,
   deleteTimeEntry,
   endTimeEntry,
   getAllTimeEntries,
+  updateTimeEntry,
   type GetTimeEntriesParams,
 } from '../api/timeEntry'
 
@@ -58,6 +59,22 @@ export const useEndTimeEntry = () => {
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Failed to end time entry')
+    },
+  })
+}
+
+export const useUpdateTimeEntry = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateTimeEntryPayload }) =>
+      updateTimeEntry(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['timeEntries'] })
+      toast.success('Time entry updated successfully')
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to update time entry')
     },
   })
 }

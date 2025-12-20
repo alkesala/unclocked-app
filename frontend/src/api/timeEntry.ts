@@ -1,5 +1,5 @@
 import { api } from '../lib/api'
-import type { CreateTimeEntryPayload } from '@unclocked-app/shared'
+import type { CreateTimeEntryPayload, UpdateTimeEntryPayload } from '@unclocked-app/shared'
 
 export interface TimeEntry {
   _id: string
@@ -49,5 +49,13 @@ export const endTimeEntry = async (
   endedAt: string
 ): Promise<TimeEntry> => {
   const response = await api.patch(`/time-entries/end/${id}`, { endedAt })
+  return response.data
+}
+
+export const updateTimeEntry = async (
+  id: string,
+  data: UpdateTimeEntryPayload
+): Promise<TimeEntry> => {
+  const response = await api.patch(`/time-entries/${id}`, data)
   return response.data
 }
