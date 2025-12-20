@@ -7,6 +7,8 @@ import {
 import { Timer } from "../components/Timer"
 import { FloatingActionButton } from "../components/FloatingActionButton"
 import { useTimeEntries } from "../hooks/useTimeEntries"
+import { useProjects } from "../hooks/useProjects"
+import { Link } from "@tanstack/react-router"
 
 const calculateHours = (entries: { startedAt: string; endedAt?: string }[]) => {
   const totalMs = entries.reduce((sum, entry) => {
@@ -34,6 +36,7 @@ const getWeekStart = () => {
 
 export const DashboardPage = () => {
   const { data: allEntries, isLoading } = useTimeEntries()
+  const { data: projectsData, isLoading: isLoadingProjects } = useProjects()
 
   const todayStart = getTodayStart()
   const weekStart = getWeekStart()
@@ -48,6 +51,7 @@ export const DashboardPage = () => {
 
   const hoursToday = isLoading ? "-" : `${calculateHours(todayEntries)}h`
   const hoursThisWeek = isLoading ? "-" : `${calculateHours(weekEntries)}h`
+  const totalProjects = isLoadingProjects ? "-" : (projectsData?.total || 0)
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
@@ -72,6 +76,15 @@ export const DashboardPage = () => {
               <CardTitle className="text-3xl">{hoursThisWeek}</CardTitle>
             </CardHeader>
           </Card>
+
+          <Link to="/projects" className="block hover:opacity-80 transition-opacity">
+            <Card>
+              <CardHeader>
+                <CardDescription>Total Projects</CardDescription>
+                <CardTitle className="text-3xl">{totalProjects}</CardTitle>
+              </CardHeader>
+            </Card>
+          </Link>
         </div>
       </div>
 
