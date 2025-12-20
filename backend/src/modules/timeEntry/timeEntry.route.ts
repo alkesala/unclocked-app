@@ -6,23 +6,23 @@ import { TimeEntryValidator } from "@unclocked-app/shared"
 export const TimeEntryRouter = Router()
 
 TimeEntryRouter.post(
-    "/",
+    "/time-entries",
     validator(TimeEntryValidator.createTimeEntrySchema),
     TimeEntryController.createTimeEntry
 )
 
 TimeEntryRouter.get(
-    "/",
+    "/time-entries",
     validator(TimeEntryValidator.getAllEntriesSchema),
     TimeEntryController.getEntries
 )
 TimeEntryRouter.delete(
-    "/:id",
+    "/time-entries/:id",
     validator(TimeEntryValidator.deleteByIdSchema),
     TimeEntryController.deleteTimeEntry
 )
 TimeEntryRouter.patch(
-    "/end/:id",
+    "/time-entries/end/:id",
     validator(TimeEntryValidator.endTimeEntrySchema),
     TimeEntryController.endTimeEntry
 )
