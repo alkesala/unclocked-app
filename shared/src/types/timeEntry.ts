@@ -45,9 +45,19 @@ export const TimeEntryValidator = {
   endTimeEntrySchema,
 };
 
+// Type after Zod preprocessing (used by backend)
 export type CreateTimeEntryInput = z.infer<
   typeof TimeEntryValidator.createTimeEntrySchema
 >["body"];
+
+// Type before Zod preprocessing (raw JSON payload from frontend)
+export type CreateTimeEntryPayload = {
+  project: string;
+  startedAt: string;
+  endedAt?: string;
+  note?: string;
+  hourlyRate?: number;
+};
 
 export type TimeEntryFilter = z.infer<typeof TimeEntryFilterSchema> & {
   accountId: string;
