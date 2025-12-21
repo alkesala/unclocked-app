@@ -3,13 +3,18 @@ import "express-serve-static-core"
 
 declare module "express-serve-static-core" {
     interface Request {
-        /** fake “user” identifier */
+        /** User identifier (from JWT) */
+        userId?: string
+        /**
+         * @deprecated Use userId instead - kept for backward compatibility
+         * User identifier (same as userId)
+         */
         accountId?: string
-        /** fake user profile */
+        /** User profile from JWT */
         user?: {
             name: string
             email: string
-            role: "user" | "admin"
+            role: "user" | "admin" | "superadmin"
         }
     }
 }
