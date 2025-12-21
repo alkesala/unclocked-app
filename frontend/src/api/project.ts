@@ -55,7 +55,7 @@ export const updateProject = async (
   id: string,
   data: UpdateProjectPayload
 ): Promise<Project> => {
-  const response = await api.patch(`/project/${id}`, data)
+  const response = await api.put(`/project/${id}`, data)
   return response.data
 }
 

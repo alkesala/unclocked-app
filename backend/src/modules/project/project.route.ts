@@ -12,9 +12,9 @@ export const ProjectRouter = Router()
  * * @accountId - the account ID of the user making the request injected by the auth middleware
  */
 ProjectRouter.get(
-    "/",
-    validator(ProjectValidator.getProjectsSchema),
-    ProjectController.getProjects
+  "/",
+  validator(ProjectValidator.getProjectsSchema),
+  ProjectController.getProjects
 )
 
 /** Post a new project
@@ -24,9 +24,9 @@ ProjectRouter.get(
  * * @accountId - the account ID of the user making the request injected by the auth middleware
  */
 ProjectRouter.post(
-    "/",
-    validator(ProjectValidator.createProjectSchema),
-    ProjectController.createProject
+  "/",
+  validator(ProjectValidator.createProjectSchema),
+  ProjectController.createProject
 )
 
 /** Update a project by ID
@@ -38,10 +38,10 @@ ProjectRouter.post(
  * * @bodyParam isActive - the active status of the project
  * * @accountId - the account ID of the user making the request injected by the auth middleware
  */
-ProjectRouter.patch(
-    "/:id",
-    validator(ProjectValidator.updateProjectSchema),
-    ProjectController.updateProjectById
+ProjectRouter.put(
+  "/:id",
+  validator(ProjectValidator.updateProjectSchema),
+  ProjectController.updateProjectById
 )
 
 /** Delete a project by ID
@@ -50,7 +50,7 @@ ProjectRouter.patch(
  * * @accountId - the account ID of the user making the request injected by the auth middleware
  */
 ProjectRouter.delete(
-    "/:id",
-    validator(ProjectValidator.deleteProjectByIdSchema),
-    ProjectController.deleteProjectById
+  "/:id",
+  validator(ProjectValidator.deleteProjectByIdSchema),
+  ProjectController.deleteProjectById
 )
