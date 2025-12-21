@@ -9,13 +9,14 @@ export const api = axios.create({
   },
 })
 
-// Add request interceptor for auth headers if needed
+const TOKEN_KEY = "auth_token"
+
+// Add request interceptor to include auth token
 api.interceptors.request.use((config) => {
-  // Future: add auth token here
-  // const token = localStorage.getItem("token")
-  // if (token) {
-  //   config.headers.Authorization = `Bearer ${token}`
-  // }
+  const token = localStorage.getItem(TOKEN_KEY)
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
   return config
 })
 
@@ -23,7 +24,14 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Future: handle specific error codes (401, 403, etc.)
+    // Handle 401 Unauthorized - token expired or invalid
+    if (error.response?.status === 401) {
+      localStorage.removeItem(TOKEN_KEY)
+      // Only redirect if not already on login page
+      if (!window.location.pathname.includes("/login")) {
+        window.location.href = "/login"
+      }
+    }
     return Promise.reject(error)
   }
 )
