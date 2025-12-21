@@ -1,6 +1,7 @@
-import { fakeOAuth } from "@/middleware/fake-oauth"
+import { jwtAuth } from "@/middleware/jwt-auth"
 import { requestLogger } from "@/middleware/request-logger"
 import { unknownEndpoint } from "@/middleware/unknown-endpoint"
+import { AuthRouter } from "@/modules/auth/auth.route"
 import { ReportRouter } from "@/modules/reports/reports.route"
 import { statusRouter } from "@/modules/status/status.route"
 import { TimeEntryRouter } from "@/modules/timeEntry/timeEntry.route"
@@ -23,7 +24,6 @@ app.use(
     })
 )
 
-app.use(fakeOAuth)
 app.use(express.json())
 app.use(requestLogger)
 
@@ -35,7 +35,12 @@ const server = http.createServer(app)
 // Routes go down here;
 const apiRouter = express.Router()
 
+// Public routes (no authentication required)
+apiRouter.use("/auth", AuthRouter)
 apiRouter.use(statusRouter)
+
+// Protected routes (require JWT authentication)
+apiRouter.use(jwtAuth)
 apiRouter.use("/project", ProjectRouter)
 apiRouter.use(TimeEntryRouter)
 apiRouter.use("/reports", ReportRouter)
