@@ -8,8 +8,11 @@ import { ReportModel } from "./reports.model"
 import { TimeEntryService } from "../timeEntry/timeEntry.service"
 
 // Basic CRUD operations for reports
-const createReport = async (input: CreateReportInput) => {
-    const { project, rangeStart, rangeEnd, name, account } = input
+const createReport = async (
+    input: CreateReportInput & { account: string }
+) => {
+    const { project, rangeStart, rangeEnd, name } = input.body
+    const { account } = input
 
     // Calculate totals from time entries
     const { totalHours, totalEarnings } =
@@ -17,7 +20,7 @@ const createReport = async (input: CreateReportInput) => {
             project.toString(),
             rangeStart,
             rangeEnd,
-            account.toString()
+            account
         )
 
     // Create report with calculated values
