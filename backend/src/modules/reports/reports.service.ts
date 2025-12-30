@@ -1,18 +1,15 @@
 import { Types } from "mongoose"
 import {
-    CreateReportInput,
     DeleteReportInput,
+    ReportEntry,
     ReportFilter,
 } from "@unclocked-app/shared"
 import { ReportModel } from "./reports.model"
 import { TimeEntryService } from "../timeEntry/timeEntry.service"
 
 // Basic CRUD operations for reports
-const createReport = async (
-    input: CreateReportInput & { account: string }
-) => {
-    const { project, rangeStart, rangeEnd, name } = input.body
-    const { account } = input
+const createReport = async (input: ReportEntry) => {
+    const { project, rangeStart, rangeEnd, name, account } = input
 
     // Calculate totals from time entries
     const { totalHours, totalEarnings } =
@@ -20,7 +17,7 @@ const createReport = async (
             project.toString(),
             rangeStart,
             rangeEnd,
-            account
+            account.toString()
         )
 
     // Create report with calculated values
