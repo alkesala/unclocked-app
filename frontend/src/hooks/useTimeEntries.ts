@@ -6,6 +6,7 @@ import {
   deleteTimeEntry,
   endTimeEntry,
   getAllTimeEntries,
+  getTimeEntryById,
   updateTimeEntry,
   type GetTimeEntriesParams,
 } from '../api/timeEntry'
@@ -14,6 +15,16 @@ export const useTimeEntries = (params?: GetTimeEntriesParams) => {
   return useQuery({
     queryKey: ['timeEntries', params],
     queryFn: () => getAllTimeEntries(params),
+  })
+}
+
+export const useTimeEntry = (id: string | null) => {
+  return useQuery({
+    queryKey: ['timeEntry', id],
+    queryFn: () => getTimeEntryById(id!),
+    enabled: !!id,
+    staleTime: 0,
+    refetchOnMount: 'always',
   })
 }
 
