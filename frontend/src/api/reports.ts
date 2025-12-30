@@ -2,7 +2,7 @@ import { api } from '../lib/api'
 import type { CreateReportPayload } from '@unclocked-app/shared'
 
 export interface Report {
-  _id: string
+  id: string
   account: string
   project: string
   name: string

@@ -41,6 +41,16 @@ export const AppLayout = () => {
                             >
                                 Time Entries
                             </Link>
+                            <Link
+                                to="/reports"
+                                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 border-b-2 border-transparent hover:border-gray-300"
+                                activeProps={{
+                                    className:
+                                        "inline-flex items-center px-1 pt-1 text-sm font-medium text-blue-600 border-b-2 border-blue-500",
+                                }}
+                            >
+                                Reports
+                            </Link>
                         </div>
                         <div className="flex items-center space-x-4">
                             <span className="text-sm text-gray-700">
