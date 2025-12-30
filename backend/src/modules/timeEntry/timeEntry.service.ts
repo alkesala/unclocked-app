@@ -53,6 +53,14 @@ const getAllEntries = async (filter: TimeEntryFilter) => {
         offset,
     }
 }
+const getTimeEntryById = async (id: string, accountId: string) => {
+    const accountObjectId = new Types.ObjectId(accountId)
+    return TimeEntryModel.findOne({
+        _id: id,
+        account: accountObjectId,
+    }).exec()
+}
+
 const deleteById = async (input: DeleteTimeEntryInput) => {
     const { id, accountId } = input
     const accountObjectId = new Types.ObjectId(accountId)
@@ -141,4 +149,5 @@ export const TimeEntryService = {
     endTimeEntry,
     updateTimeEntryById,
     calculateTotalsForReport,
+    getTimeEntryById,
 }

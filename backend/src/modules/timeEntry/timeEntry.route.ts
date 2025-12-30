@@ -16,6 +16,10 @@ TimeEntryRouter.get(
     validator(TimeEntryValidator.getAllEntriesSchema),
     TimeEntryController.getEntries
 )
+TimeEntryRouter.get(
+    "/time-entries/:id",
+    TimeEntryController.getTimeEntryById
+)
 TimeEntryRouter.delete(
     "/time-entries/:id",
     validator(TimeEntryValidator.deleteByIdSchema),

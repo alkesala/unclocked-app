@@ -103,6 +103,32 @@ const getEntries = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+const getTimeEntryById = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    const { id } = req.params
+    try {
+        if (!req.accountId) {
+            res.status(StatusCodes.UNAUTHORIZED).json({
+                error: "Unauthorized",
+            })
+            return
+        }
+        const entry = await TimeEntryService.getTimeEntryById(id, req.accountId)
+        if (!entry) {
+            res.status(StatusCodes.NOT_FOUND).json({
+                error: "Time entry not found",
+            })
+            return
+        }
+        res.status(StatusCodes.OK).json(entry)
+    } catch (err) {
+        next(err)
+    }
+}
+
 const updateTimeEntryById = async (
     req: Request<{ id: string }>,
     res: Response,
@@ -139,4 +165,5 @@ export const TimeEntryController = {
     getEntries,
     endTimeEntry,
     updateTimeEntryById,
+    getTimeEntryById,
 }
