@@ -49,7 +49,7 @@ export const ProjectEntriesPage = () => {
 
     // Find the current project
     const project = useMemo(() => {
-        return projectsData?.data.find((p) => p._id === projectId)
+        return projectsData?.data.find((p) => p.id === projectId)
     }, [projectsData, projectId])
 
     const handleDelete = () => {
@@ -268,7 +268,7 @@ export const ProjectEntriesPage = () => {
                                                   new Date(entry.startedAt).getTime()
 
                                             return (
-                                                <TableRow key={entry._id}>
+                                                <TableRow key={entry.id}>
                                                     <TableCell>
                                                         {formatTime(entry.startedAt)}
                                                     </TableCell>
@@ -303,7 +303,7 @@ export const ProjectEntriesPage = () => {
                                                                 size="sm"
                                                                 onClick={() =>
                                                                     setDeleteEntryId(
-                                                                        entry._id
+                                                                        entry.id
                                                                     )
                                                                 }
                                                             >

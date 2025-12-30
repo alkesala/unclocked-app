@@ -1,7 +1,7 @@
 import { api } from '../lib/api'
 
 export interface Project {
-  _id: string
+  id: string
   name: string
   description?: string
   hourlyRate: number

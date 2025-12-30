@@ -58,7 +58,7 @@ export const EditProjectDialog = ({
 
     updateProject.mutate(
       {
-        id: project._id,
+        id: project.id,
         data: {
           name: name.trim(),
           description: description.trim() || undefined,

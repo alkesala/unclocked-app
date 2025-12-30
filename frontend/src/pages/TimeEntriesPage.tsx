@@ -162,7 +162,7 @@ export const TimeEntriesPage = () => {
 
   // Create project map for lookups
   const projectMap = useMemo(() => {
-    return new Map((projectsData?.data || []).map((p) => [p._id, p]))
+    return new Map((projectsData?.data || []).map((p) => [p.id, p]))
   }, [projectsData])
 
   if (isLoading) {
@@ -198,7 +198,7 @@ export const TimeEntriesPage = () => {
           <SelectContent>
             <SelectItem value="all">All Projects</SelectItem>
             {projectsData?.data.map((proj) => (
-              <SelectItem key={proj._id} value={proj._id}>
+              <SelectItem key={proj.id} value={proj.id}>
                 {proj.name}
               </SelectItem>
             ))}
@@ -324,7 +324,7 @@ export const TimeEntriesPage = () => {
                         : Date.now() - new Date(entry.startedAt).getTime()
 
                       return (
-                        <TableRow key={entry._id}>
+                        <TableRow key={entry.id}>
                           <TableCell className="font-medium">
                             {project?.name || "Unknown Project"}
                           </TableCell>
@@ -352,7 +352,7 @@ export const TimeEntriesPage = () => {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => setDeleteEntryId(entry._id)}
+                                onClick={() => setDeleteEntryId(entry.id)}
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>

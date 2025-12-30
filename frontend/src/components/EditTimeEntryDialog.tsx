@@ -77,7 +77,7 @@ export const EditTimeEntryDialog = ({
 
     updateEntry.mutate(
       {
-        id: entry._id,
+        id: entry.id,
         data: {
           project,
           startedAt,
@@ -119,7 +119,7 @@ export const EditTimeEntryDialog = ({
               </SelectTrigger>
               <SelectContent>
                 {projectsData?.data.map((proj) => (
-                  <SelectItem key={proj._id} value={proj._id}>
+                  <SelectItem key={proj.id} value={proj.id}>
                     {proj.name}
                   </SelectItem>
                 ))}

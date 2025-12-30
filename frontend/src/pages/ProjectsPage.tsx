@@ -103,7 +103,7 @@ export const ProjectsPage = () => {
             </TableHeader>
             <TableBody>
               {projects.map((project) => (
-                <TableRow key={project._id}>
+                <TableRow key={project.id}>
                   <TableCell className="font-medium">{project.name}</TableCell>
                   <TableCell className="max-w-xs truncate">
                     {project.description || "-"}
@@ -120,7 +120,7 @@ export const ProjectsPage = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => navigate({ to: "/projects/$projectId/entries", params: { projectId: project._id } })}
+                        onClick={() => navigate({ to: "/projects/$projectId/entries", params: { projectId: project.id } })}
                       >
                         <Clock className="h-4 w-4" />
                       </Button>
@@ -134,7 +134,7 @@ export const ProjectsPage = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => setDeleteProjectId(project._id)}
+                        onClick={() => setDeleteProjectId(project.id)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

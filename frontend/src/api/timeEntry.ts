@@ -2,7 +2,7 @@ import { api } from '../lib/api'
 import type { CreateTimeEntryPayload, UpdateTimeEntryPayload } from '@unclocked-app/shared'
 
 export interface TimeEntry {
-  _id: string
+  id: string
   account: string
   project: string
   startedAt: string

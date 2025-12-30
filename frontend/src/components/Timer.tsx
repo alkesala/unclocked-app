@@ -160,7 +160,7 @@ export const Timer = () => {
                 </SelectTrigger>
                 <SelectContent>
                   {projectsData?.data.map((project) => (
-                    <SelectItem key={project._id} value={project._id}>
+                    <SelectItem key={project.id} value={project.id}>
                       {project.name}
                     </SelectItem>
                   ))}

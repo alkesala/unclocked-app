@@ -115,7 +115,7 @@ export const CreateTimeEntryDialog = ({
               </SelectTrigger>
               <SelectContent>
                 {projectsData?.data.map((proj) => (
-                  <SelectItem key={proj._id} value={proj._id}>
+                  <SelectItem key={proj.id} value={proj.id}>
                     {proj.name}
                   </SelectItem>
                 ))}
