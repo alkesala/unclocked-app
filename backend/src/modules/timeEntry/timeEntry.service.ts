@@ -88,10 +88,57 @@ const updateTimeEntryById = async (
     )
 }
 
+const calculateTotalsForReport = async (
+    projectId: string,
+    rangeStart: Date,
+    rangeEnd: Date,
+    accountId: string
+): Promise<{ totalHours: number; totalEarnings: number }> => {
+    const accountObjectId = new Types.ObjectId(accountId)
+    const projectObjectId = new Types.ObjectId(projectId)
+
+    // Fetch project to get hourly rate fallback
+    const project = await ProjectModel.findById(projectObjectId)
+    if (!project) {
+        throw new Error("Project not found")
+    }
+
+    // Query time entries within date range
+    const timeEntries = await TimeEntryModel.find({
+        account: accountObjectId,
+        project: projectObjectId,
+        startedAt: { $gte: rangeStart, $lte: rangeEnd },
+        endedAt: { $exists: true, $ne: null }, // Only completed entries
+    })
+
+    let totalHours = 0
+    let totalEarnings = 0
+
+    for (const entry of timeEntries) {
+        // Calculate duration in hours
+        const durationMs =
+            entry.endedAt!.getTime() - entry.startedAt.getTime()
+        const durationHours = durationMs / (1000 * 60 * 60)
+
+        // Use entry hourly rate or fallback to project rate
+        const rate = entry.hourlyRate ?? project.hourlyRate ?? 0
+
+        totalHours += durationHours
+        // Store earnings in cents (multiply by 100)
+        totalEarnings += durationHours * rate * 100
+    }
+
+    // Round earnings to nearest cent
+    totalEarnings = Math.round(totalEarnings)
+
+    return { totalHours, totalEarnings }
+}
+
 export const TimeEntryService = {
     create,
     deleteById,
     getAllEntries,
     endTimeEntry,
     updateTimeEntryById,
+    calculateTotalsForReport,
 }

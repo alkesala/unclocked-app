@@ -5,10 +5,31 @@ import {
     ReportFilter,
 } from "@unclocked-app/shared"
 import { ReportModel } from "./reports.model"
+import { TimeEntryService } from "../timeEntry/timeEntry.service"
 
 // Basic CRUD operations for reports
 const createReport = async (input: CreateReportInput) => {
-    return ReportModel.create(input)
+    const { project, rangeStart, rangeEnd, name, account } = input
+
+    // Calculate totals from time entries
+    const { totalHours, totalEarnings } =
+        await TimeEntryService.calculateTotalsForReport(
+            project.toString(),
+            rangeStart,
+            rangeEnd,
+            account.toString()
+        )
+
+    // Create report with calculated values
+    return ReportModel.create({
+        account,
+        project,
+        name,
+        rangeStart,
+        rangeEnd,
+        totalHours,
+        totalEarnings,
+    })
 }
 
 const getReports = async (filter: ReportFilter) => {

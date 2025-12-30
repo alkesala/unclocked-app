@@ -18,10 +18,7 @@ const createReport = async (
         const created = await ReportService.createReport({
             ...req.body,
             account: req.accountId,
-            totalHours: 0, // TODO: DUMMY DELETE
-            totalEarnings: 0, //TODO: DELETE
         })
-        console.log("Created report", created)
         res.status(StatusCodes.CREATED).json(created)
     } catch (err) {
         next(err)
