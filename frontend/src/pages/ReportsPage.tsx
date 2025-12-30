@@ -123,7 +123,7 @@ export const ReportsPage = () => {
                     </Badge>
                   </TableCell>
                   <TableCell className="font-medium">
-                    {formatCurrency(report.totalEarnings)}
+                    {formatCurrency(report.totalEarnings / 100)}
                   </TableCell>
                   <TableCell>{formatDate(report.createdAt)}</TableCell>
                   <TableCell className="text-right">
