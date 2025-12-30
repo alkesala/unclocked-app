@@ -66,6 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const logout = () => {
         localStorage.removeItem(TOKEN_KEY)
+        localStorage.removeItem('running_timer_entry_id')
         setUser(null)
         window.location.href = "/login"
     }
