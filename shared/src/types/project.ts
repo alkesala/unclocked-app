@@ -3,7 +3,7 @@ import { z } from "zod";
 const createProjectSchema = z.object({
   body: z.object({
     name: z.string().min(1, "Project name is required"),
-    description: z.string().min(1, "Project description is required"),
+    description: z.string().optional(),
     isActive: z.boolean().default(true),
     hourlyRate: z.number().optional(),
   }),
@@ -13,10 +13,7 @@ const updateProjectSchema = z
   .object({
     body: z.object({
       name: z.string().min(1, "Project name is required").optional(),
-      description: z
-        .string()
-        .min(1, "Project description is required")
-        .optional(),
+      description: z.string().optional(),
       isActive: z.boolean().optional(),
       hourlyRate: z.number().optional(),
     }),

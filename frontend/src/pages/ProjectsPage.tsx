@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Pencil, Trash2 } from "lucide-react"
+import { useNavigate } from "@tanstack/react-router"
+import { Pencil, Trash2, Clock } from "lucide-react"
 import { useProjects, useDeleteProject } from "../hooks/useProjects"
 import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
@@ -31,6 +32,7 @@ export const ProjectsPage = () => {
   const [editingProject, setEditingProject] = useState<Project | null>(null)
   const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null)
 
+  const navigate = useNavigate()
   const { data: projectsData, isLoading } = useProjects()
   const deleteProject = useDeleteProject()
 
@@ -115,6 +117,13 @@ export const ProjectsPage = () => {
                   <TableCell>{formatDate(project.createdAt)}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => navigate({ to: "/projects/$projectId/entries", params: { projectId: project._id } })}
+                      >
+                        <Clock className="h-4 w-4" />
+                      </Button>
                       <Button
                         variant="ghost"
                         size="sm"

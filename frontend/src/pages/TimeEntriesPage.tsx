@@ -34,16 +34,18 @@ import {
   AlertDialogTitle,
 } from "../components/ui/alert-dialog"
 import { EditTimeEntryDialog } from "../components/EditTimeEntryDialog"
+import { CreateTimeEntryDialog } from "../components/CreateTimeEntryDialog"
 import { formatDuration, formatTime } from "../lib/utils"
 import type { TimeEntry } from "../api/timeEntry"
 
 export const TimeEntriesPage = () => {
   // Dialog states
+  const [createDialogOpen, setCreateDialogOpen] = useState(false)
   const [editingEntry, setEditingEntry] = useState<TimeEntry | null>(null)
   const [deleteEntryId, setDeleteEntryId] = useState<string | null>(null)
 
   // Filter states
-  const [selectedProject, setSelectedProject] = useState<string>("")
+  const [selectedProject, setSelectedProject] = useState<string>("all")
   const [dateRangeStart, setDateRangeStart] = useState<string>("")
   const [dateRangeEnd, setDateRangeEnd] = useState<string>("")
   const [showRunning, setShowRunning] = useState<boolean | null>(null)
@@ -84,7 +86,7 @@ export const TimeEntriesPage = () => {
     let filtered = entriesData?.data || []
 
     // Project filter
-    if (selectedProject) {
+    if (selectedProject && selectedProject !== "all") {
       filtered = filtered.filter((e) => e.project === selectedProject)
     }
 
@@ -181,6 +183,9 @@ export const TimeEntriesPage = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Time Entries</h1>
+        <Button onClick={() => setCreateDialogOpen(true)}>
+          Create Entry
+        </Button>
       </div>
 
       {/* Filters Row */}
@@ -191,7 +196,7 @@ export const TimeEntriesPage = () => {
             <SelectValue placeholder="All Projects" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Projects</SelectItem>
+            <SelectItem value="all">All Projects</SelectItem>
             {projectsData?.data.map((proj) => (
               <SelectItem key={proj._id} value={proj._id}>
                 {proj.name}
@@ -363,6 +368,13 @@ export const TimeEntriesPage = () => {
           </div>
         )
       })}
+
+      {/* Create Dialog */}
+      <CreateTimeEntryDialog
+        open={createDialogOpen}
+        onOpenChange={setCreateDialogOpen}
+        defaultProjectId={selectedProject !== "all" ? selectedProject : undefined}
+      />
 
       {/* Edit Dialog */}
       {editingEntry && (

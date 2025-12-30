@@ -1,5 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router"
-import { ProjectsPage } from "../pages/ProjectsPage"
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/projects")({
     beforeLoad: () => {
@@ -8,5 +7,5 @@ export const Route = createFileRoute("/projects")({
             throw redirect({ to: "/login" })
         }
     },
-    component: ProjectsPage,
+    component: () => <Outlet />,
 })
