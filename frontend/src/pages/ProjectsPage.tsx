@@ -24,7 +24,7 @@ import {
 } from "../components/ui/alert-dialog"
 import { CreateProjectDialog } from "../components/CreateProjectDialog"
 import { EditProjectDialog } from "../components/EditProjectDialog"
-import { formatCurrency } from "../lib/utils"
+import { formatCurrency, formatDate } from "../lib/utils"
 import type { Project } from "../api/project"
 
 export const ProjectsPage = () => {
@@ -44,14 +44,6 @@ export const ProjectsPage = () => {
         },
       })
     }
-  }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    })
   }
 
   if (isLoading) {
