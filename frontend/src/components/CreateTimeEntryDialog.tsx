@@ -117,8 +117,9 @@ export const CreateTimeEntryDialog = ({
               Start Time <span className="text-destructive">*</span>
             </label>
             <DateTimePicker
-              date={formState.startedAt}
-              setDate={(date) => updateField("startedAt", date || new Date())}
+              value={formState.startedAt}
+              onChange={(date) => updateField("startedAt", date || new Date())}
+              placeholder="Select start time"
             />
           </div>
 
@@ -145,8 +146,9 @@ export const CreateTimeEntryDialog = ({
                 End Time
               </label>
               <DateTimePicker
-                date={formState.endedAt}
-                setDate={(date) => updateField("endedAt", date)}
+                value={formState.endedAt}
+                onChange={(date) => updateField("endedAt", date)}
+                placeholder="Select end time"
               />
             </div>
           )}
