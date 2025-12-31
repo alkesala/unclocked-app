@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { format, isValid } from "date-fns"
 
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs))
@@ -46,12 +47,31 @@ export const formatTime = (isoString: string): string => {
 }
 
 // Format date to datetime-local input format (YYYY-MM-DDTHH:mm)
-export const formatToDateTimeLocal = (isoString: string): string => {
-  const date = new Date(isoString)
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, "0")
-  const day = String(date.getDate()).padStart(2, "0")
-  const hours = String(date.getHours()).padStart(2, "0")
-  const minutes = String(date.getMinutes()).padStart(2, "0")
+// Updated to accept both Date and string for better flexibility
+export const formatToDateTimeLocal = (date: Date | string): string => {
+  const dateObj = typeof date === 'string' ? new Date(date) : date
+  const year = dateObj.getFullYear()
+  const month = String(dateObj.getMonth() + 1).padStart(2, "0")
+  const day = String(dateObj.getDate()).padStart(2, "0")
+  const hours = String(dateObj.getHours()).padStart(2, "0")
+  const minutes = String(dateObj.getMinutes()).padStart(2, "0")
   return `${year}-${month}-${day}T${hours}:${minutes}`
+}
+
+// Parse ISO string to Date
+export const isoToDate = (iso: string): Date => new Date(iso)
+
+// Format Date for datetime picker display
+export const formatDateTimeDisplay = (date: Date): string => {
+  return format(date, "MMM dd, yyyy - HH:mm")
+}
+
+// Format Date for date range display
+export const formatDateRange = (date: Date): string => {
+  return format(date, "MMM dd, yyyy")
+}
+
+// Validate Date
+export const isValidDate = (date: Date | undefined | null): date is Date => {
+  return date instanceof Date && isValid(date)
 }
