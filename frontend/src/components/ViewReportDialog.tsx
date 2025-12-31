@@ -19,6 +19,12 @@ import {
 import { useReportDetails } from '../hooks/useReports'
 import { exportToCSV, exportToPDF, exportToJSON } from '../lib/exportUtils'
 import { formatDate, formatTime, formatDuration, formatCurrency } from '../lib/utils'
+import {
+  calculateTotalDuration,
+  msToHours,
+  calculateEntryEarnings,
+  calculateDuration,
+} from '../lib/calculations'
 import { FileText, FileDown, FileJson, Loader2 } from 'lucide-react'
 import type { TimeEntry } from '../api/timeEntry'
 
@@ -118,18 +124,11 @@ export const ViewReportDialog = ({
   const { report, timeEntries } = data
 
   // Calculate totals
-  const totalHours = timeEntries.reduce((sum, entry) => {
-    if (!entry.endedAt) return sum
-    const durationMs = new Date(entry.endedAt).getTime() - new Date(entry.startedAt).getTime()
-    return sum + durationMs / (1000 * 60 * 60)
-  }, 0)
+  const totalDurationMs = calculateTotalDuration(timeEntries)
+  const totalHours = msToHours(totalDurationMs)
 
   const totalEarnings = timeEntries.reduce((sum, entry) => {
-    if (!entry.endedAt) return sum
-    const durationMs = new Date(entry.endedAt).getTime() - new Date(entry.startedAt).getTime()
-    const durationHours = durationMs / (1000 * 60 * 60)
-    const rate = entry.hourlyRate ?? report.project.hourlyRate ?? 0
-    return sum + durationHours * rate
+    return sum + calculateEntryEarnings(entry, report.project)
   }, 0)
 
   return (
@@ -171,13 +170,7 @@ export const ViewReportDialog = ({
                   const entries = groupedEntries[date]
 
                   // Calculate daily total
-                  const dailyTotal = entries.reduce((sum, entry) => {
-                    if (!entry.endedAt) return sum
-                    const durationMs =
-                      new Date(entry.endedAt).getTime() -
-                      new Date(entry.startedAt).getTime()
-                    return sum + durationMs
-                  }, 0)
+                  const dailyTotal = calculateTotalDuration(entries)
 
                   return (
                     <div key={date} className="border rounded-lg">
@@ -207,12 +200,8 @@ export const ViewReportDialog = ({
                           {entries.map((entry) => {
                             if (!entry.endedAt) return null
 
-                            const durationMs =
-                              new Date(entry.endedAt).getTime() -
-                              new Date(entry.startedAt).getTime()
-                            const durationHours = durationMs / (1000 * 60 * 60)
-                            const rate = entry.hourlyRate ?? report.project.hourlyRate ?? 0
-                            const earnings = durationHours * rate
+                            const durationMs = calculateDuration(entry.startedAt, entry.endedAt)
+                            const earnings = calculateEntryEarnings(entry, report.project)
 
                             return (
                               <TableRow key={entry.id}>
