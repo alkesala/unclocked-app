@@ -71,6 +71,11 @@ export const formatDateRange = (date: Date): string => {
   return format(date, "MMM dd, yyyy")
 }
 
+// Format date string (ISO) to readable format
+export const formatDate = (dateString: string): string => {
+  return format(new Date(dateString), "MMM dd, yyyy")
+}
+
 // Validate Date
 export const isValidDate = (date: Date | undefined | null): date is Date => {
   return date instanceof Date && isValid(date)
