@@ -27,6 +27,17 @@ ReportRouter.post(
     ReportController.createReport
 )
 
+/** Get a report by ID with time entries
+ * * @route GET /api/v1/reports/:id
+ * * @param id - the ID of the report to fetch
+ * * @accountId - the account ID of the user making the request injected by the auth middleware
+ */
+ReportRouter.get(
+    "/:id",
+    validator(ReportsValidator.getReportByIdSchema),
+    ReportController.getReportDetails
+)
+
 /** Delete a report by ID
  * * @route DELETE /api/v1/reports/:id
  * * @param id - the ID of the report to delete
