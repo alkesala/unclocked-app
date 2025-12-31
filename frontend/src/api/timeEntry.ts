@@ -52,6 +52,11 @@ export const endTimeEntry = async (
   return response.data
 }
 
+export const getTimeEntryById = async (id: string): Promise<TimeEntry> => {
+  const response = await api.get(`/time-entries/${id}`)
+  return response.data
+}
+
 export const updateTimeEntry = async (
   id: string,
   data: UpdateTimeEntryPayload
