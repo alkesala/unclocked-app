@@ -64,8 +64,43 @@ const deleteReportById = async (input: DeleteReportInput) => {
     }).exec()
 }
 
+const getReportDetailsById = async (id: string, accountId: string) => {
+    const accountObjectId = new Types.ObjectId(accountId)
+
+    // Fetch report with populated project details
+    const report = await ReportModel.findOne({
+        _id: id,
+        account: accountObjectId,
+    })
+        .populate("project", "name hourlyRate")
+        .exec()
+
+    if (!report) {
+        return null
+    }
+
+    // Import TimeEntryModel to query time entries
+    const { TimeEntryModel } = await import("../timeEntry/timeEntry.model")
+
+    // Query time entries for the report period
+    const timeEntries = await TimeEntryModel.find({
+        account: accountObjectId,
+        project: report.project,
+        startedAt: { $gte: report.rangeStart, $lte: report.rangeEnd },
+        endedAt: { $exists: true, $ne: null }, // Only completed entries
+    })
+        .sort({ startedAt: -1 }) // Newest first
+        .exec()
+
+    return {
+        report,
+        timeEntries,
+    }
+}
+
 export const ReportService = {
     createReport,
     getReports,
     deleteReportById,
+    getReportDetailsById,
 }
