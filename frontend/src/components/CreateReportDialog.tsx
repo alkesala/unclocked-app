@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react"
 import {
   Dialog,
   DialogContent,
@@ -20,6 +19,8 @@ import { useCreateReport } from "../hooks/useReports"
 import { useProjects } from "../hooks/useProjects"
 import { DateRangePicker } from "./DateRangePicker"
 import { format } from "date-fns"
+import { useFormDialog } from "../hooks/useFormDialog"
+import { useDialogMutation } from "../hooks/useDialogMutation"
 
 interface CreateReportDialogProps {
   open: boolean
@@ -30,70 +31,54 @@ export const CreateReportDialog = ({
   open,
   onOpenChange,
 }: CreateReportDialogProps) => {
-  const [name, setName] = useState("")
-  const [project, setProject] = useState("")
-  const [dateRange, setDateRange] = useState<{
-    start: Date | undefined
-    end: Date | undefined
-  }>({ start: undefined, end: undefined })
-  const [error, setError] = useState<string | null>(null)
+  const { formState, updateField } = useFormDialog({
+    open,
+    defaultValues: {
+      name: "",
+      project: "",
+      dateRange: { start: undefined as Date | undefined, end: undefined as Date | undefined },
+    },
+  })
 
   const { data: projectsData } = useProjects()
   const createReport = useCreateReport()
-
-  // Reset form when dialog opens
-  useEffect(() => {
-    if (open) {
-      setName("")
-      setProject("")
-      setDateRange({ start: undefined, end: undefined })
-      setError(null)
-    }
-  }, [open])
+  const { error, setError, clearError, isPending, handleMutate } = useDialogMutation({
+    mutation: createReport,
+    onSuccess: () => onOpenChange(false),
+    defaultErrorMessage: "Failed to create report",
+  })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setError(null)
+    clearError()
 
     // Validation
-    if (!name.trim()) {
+    if (!formState.name.trim()) {
       setError("Please enter a report name")
       return
     }
 
-    if (!project) {
+    if (!formState.project) {
       setError("Please select a project")
       return
     }
 
-    if (!dateRange.start || !dateRange.end) {
+    if (!formState.dateRange.start || !formState.dateRange.end) {
       setError("Please select a date range")
       return
     }
 
-    if (dateRange.end <= dateRange.start) {
+    if (formState.dateRange.end <= formState.dateRange.start) {
       setError("End date must be after start date")
       return
     }
 
-    createReport.mutate(
-      {
-        name: name.trim(),
-        project,
-        rangeStart: format(dateRange.start, "yyyy-MM-dd"),
-        rangeEnd: format(dateRange.end, "yyyy-MM-dd"),
-      },
-      {
-        onSuccess: () => {
-          onOpenChange(false)
-        },
-        onError: (err) => {
-          setError(
-            err instanceof Error ? err.message : "Failed to create report"
-          )
-        },
-      }
-    )
+    handleMutate({
+      name: formState.name.trim(),
+      project: formState.project,
+      rangeStart: format(formState.dateRange.start, "yyyy-MM-dd"),
+      rangeEnd: format(formState.dateRange.end, "yyyy-MM-dd"),
+    })
   }
 
   return (
@@ -114,8 +99,8 @@ export const CreateReportDialog = ({
             <Input
               id="name"
               placeholder="e.g. Q4 2024 Summary"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={formState.name}
+              onChange={(e) => updateField("name", e.target.value)}
               required
             />
           </div>
@@ -124,7 +109,7 @@ export const CreateReportDialog = ({
             <label htmlFor="project" className="text-sm font-medium">
               Project <span className="text-destructive">*</span>
             </label>
-            <Select value={project} onValueChange={setProject}>
+            <Select value={formState.project} onValueChange={(value) => updateField("project", value)}>
               <SelectTrigger id="project">
                 <SelectValue placeholder="Select a project" />
               </SelectTrigger>
@@ -143,9 +128,9 @@ export const CreateReportDialog = ({
               Date Range <span className="text-destructive">*</span>
             </label>
             <DateRangePicker
-              startDate={dateRange.start}
-              endDate={dateRange.end}
-              onRangeChange={setDateRange}
+              startDate={formState.dateRange.start}
+              endDate={formState.dateRange.end}
+              onRangeChange={(range) => updateField("dateRange", range)}
               placeholder="Select report date range"
             />
           </div>
@@ -161,12 +146,12 @@ export const CreateReportDialog = ({
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              disabled={createReport.isPending}
+              disabled={isPending}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={createReport.isPending}>
-              {createReport.isPending ? "Creating..." : "Create Report"}
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Creating..." : "Create Report"}
             </Button>
           </DialogFooter>
         </form>
