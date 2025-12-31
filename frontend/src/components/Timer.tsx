@@ -20,7 +20,9 @@ import {
 } from "./ui/alert-dialog"
 import { formatDuration } from "../lib/utils"
 import { useProjects } from "../hooks/useProjects"
-import { useCreateTimeEntry } from "../hooks/useTimeEntries"
+import { useCreateTimeEntry, useEndTimeEntry, useDeleteTimeEntry, useTimeEntry } from "../hooks/useTimeEntries"
+
+const RUNNING_TIMER_KEY = 'running_timer_entry_id'
 
 export const Timer = () => {
   const [isRunning, setIsRunning] = useState(false)
@@ -29,9 +31,37 @@ export const Timer = () => {
   const [selectedProject, setSelectedProject] = useState("")
   const [description, setDescription] = useState("")
   const [showAlert, setShowAlert] = useState(false)
+  const [runningEntryId, setRunningEntryId] = useState<string | null>(null)
 
   const { data: projectsData, isLoading: isLoadingProjects } = useProjects()
   const createEntry = useCreateTimeEntry()
+  const endEntry = useEndTimeEntry()
+  const deleteEntry = useDeleteTimeEntry()
+
+  // Load persisted timer on mount
+  useEffect(() => {
+    const savedEntryId = localStorage.getItem(RUNNING_TIMER_KEY)
+    if (savedEntryId) {
+      setRunningEntryId(savedEntryId)
+      // Entry data will be fetched via useTimeEntry below
+    }
+  }, [])
+
+  // Fetch the running entry if we have an ID
+  const { data: runningEntry } = useTimeEntry(runningEntryId)
+
+  // Resume timer from persisted entry
+  useEffect(() => {
+    if (runningEntry && !runningEntry.endedAt) {
+      const startedAt = new Date(runningEntry.startedAt)
+      const elapsed = Date.now() - startedAt.getTime()
+      setMilliseconds(elapsed)
+      setStartTime(startedAt)
+      setSelectedProject(runningEntry.project)
+      setDescription(runningEntry.note || "")
+      setIsRunning(true)
+    }
+  }, [runningEntry])
 
   useEffect(() => {
     let interval: number | undefined
@@ -54,39 +84,111 @@ export const Timer = () => {
       setShowAlert(true)
       return
     }
+
     if (!isRunning) {
-      setStartTime(new Date())
+      // START: Create entry without endedAt
+      const now = new Date()
+      setStartTime(now)
+
+      createEntry.mutate(
+        {
+          project: selectedProject,
+          startedAt: now.toISOString(),
+          // NO endedAt - entry stays running
+          note: description || undefined,
+        },
+        {
+          onSuccess: (entry) => {
+            // Save entry ID to localStorage
+            localStorage.setItem(RUNNING_TIMER_KEY, entry.id)
+            setRunningEntryId(entry.id)
+            setIsRunning(true)
+          },
+        }
+      )
+    } else {
+      // STOP: End the running entry
+      if (runningEntryId) {
+        endEntry.mutate(
+          {
+            id: runningEntryId,
+            endedAt: new Date().toISOString(),
+          },
+          {
+            onSuccess: () => {
+              localStorage.removeItem(RUNNING_TIMER_KEY)
+              setRunningEntryId(null)
+              setIsRunning(false)
+            },
+          }
+        )
+      }
     }
-    setIsRunning(!isRunning)
   }
 
   const handleSave = () => {
     if (!startTime || !selectedProject) return
 
-    const endTime = new Date()
-    createEntry.mutate(
-      {
-        project: selectedProject,
-        startedAt: startTime.toISOString(),
-        endedAt: endTime.toISOString(),
-        note: description || undefined,
-      },
-      {
-        onSuccess: () => {
-          // Reset after saving
-          setMilliseconds(0)
-          setStartTime(null)
-          setDescription("")
-          setSelectedProject("")
+    if (runningEntryId) {
+      // Entry already on server, just end it
+      const endTime = new Date()
+      endEntry.mutate(
+        {
+          id: runningEntryId,
+          endedAt: endTime.toISOString(),
         },
-      }
-    )
+        {
+          onSuccess: () => {
+            localStorage.removeItem(RUNNING_TIMER_KEY)
+            setRunningEntryId(null)
+            setMilliseconds(0)
+            setStartTime(null)
+            setDescription("")
+            setSelectedProject("")
+          },
+        }
+      )
+    } else {
+      // Fallback: create entry with both start and end times
+      const endTime = new Date()
+      createEntry.mutate(
+        {
+          project: selectedProject,
+          startedAt: startTime.toISOString(),
+          endedAt: endTime.toISOString(),
+          note: description || undefined,
+        },
+        {
+          onSuccess: () => {
+            setMilliseconds(0)
+            setStartTime(null)
+            setDescription("")
+            setSelectedProject("")
+          },
+        }
+      )
+    }
   }
 
   const handleDiscard = () => {
-    setIsRunning(false)
-    setMilliseconds(0)
-    setDescription("")
+    if (runningEntryId) {
+      // Delete the running entry from server
+      deleteEntry.mutate(runningEntryId, {
+        onSuccess: () => {
+          localStorage.removeItem(RUNNING_TIMER_KEY)
+          setRunningEntryId(null)
+          setIsRunning(false)
+          setMilliseconds(0)
+          setDescription("")
+          setSelectedProject("")
+        },
+      })
+    } else {
+      // Just local state reset
+      setIsRunning(false)
+      setMilliseconds(0)
+      setDescription("")
+    }
   }
 
   return (
