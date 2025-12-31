@@ -37,6 +37,7 @@ import { EditTimeEntryDialog } from "../components/EditTimeEntryDialog"
 import { CreateTimeEntryDialog } from "../components/CreateTimeEntryDialog"
 import { DateRangePicker } from "../components/DateRangePicker"
 import { formatDuration, formatTime } from "../lib/utils"
+import { calculateTotalDuration, calculateEntryDuration } from "../lib/calculations"
 import type { TimeEntry } from "../api/timeEntry"
 
 export const TimeEntriesPage = () => {
@@ -266,13 +267,7 @@ export const TimeEntriesPage = () => {
         const isExpanded = expandedDates.has(date)
 
         // Calculate total duration for the day
-        const totalDuration = entries.reduce((sum, e) => {
-          if (!e.endedAt) return sum
-          return (
-            sum +
-            (new Date(e.endedAt).getTime() - new Date(e.startedAt).getTime())
-          )
-        }, 0)
+        const totalDuration = calculateTotalDuration(entries)
 
         return (
           <div key={date} className="border rounded-lg mb-4">
@@ -316,10 +311,7 @@ export const TimeEntriesPage = () => {
                   <TableBody>
                     {entries.map((entry) => {
                       const project = projectMap.get(entry.project)
-                      const duration = entry.endedAt
-                        ? new Date(entry.endedAt).getTime() -
-                          new Date(entry.startedAt).getTime()
-                        : Date.now() - new Date(entry.startedAt).getTime()
+                      const duration = calculateEntryDuration(entry)
 
                       return (
                         <TableRow key={entry.id}>
