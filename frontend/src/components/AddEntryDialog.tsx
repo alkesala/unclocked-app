@@ -18,20 +18,12 @@ import {
 } from "./ui/select"
 import { useProjects } from "../hooks/useProjects"
 import { useCreateTimeEntry } from "../hooks/useTimeEntries"
+import { DateTimePicker } from "./DateTimePicker"
+import { formatToDateTimeLocal } from "../lib/utils"
 
 interface AddEntryDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-}
-
-// Helper function to format date to datetime-local input format (YYYY-MM-DDTHH:mm)
-const formatDateTimeLocal = (date: Date): string => {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, "0")
-  const day = String(date.getDate()).padStart(2, "0")
-  const hours = String(date.getHours()).padStart(2, "0")
-  const minutes = String(date.getMinutes()).padStart(2, "0")
-  return `${year}-${month}-${day}T${hours}:${minutes}`
 }
 
 // Helper function to format duration in hours and minutes
@@ -50,43 +42,41 @@ const formatDurationHoursMinutes = (ms: number): string => {
 }
 
 // Get default start time (today at 9 AM)
-const getDefaultStartTime = (): string => {
+const getDefaultStartTime = (): Date => {
   const now = new Date()
-  const startTime = new Date(
+  return new Date(
     now.getFullYear(),
     now.getMonth(),
     now.getDate(),
     9,
     0
   )
-  return formatDateTimeLocal(startTime)
 }
 
 // Get default end time (today at 5 PM or current time if after 9 AM)
-const getDefaultEndTime = (): string => {
+const getDefaultEndTime = (): Date => {
   const now = new Date()
   const currentHour = now.getHours()
 
   if (currentHour >= 9) {
     // If it's after 9 AM, use current time
-    return formatDateTimeLocal(now)
+    return now
   } else {
     // Otherwise use 5 PM
-    const endTime = new Date(
+    return new Date(
       now.getFullYear(),
       now.getMonth(),
       now.getDate(),
       17,
       0
     )
-    return formatDateTimeLocal(endTime)
   }
 }
 
 export const AddEntryDialog = ({ open, onOpenChange }: AddEntryDialogProps) => {
   const [project, setProject] = useState("")
-  const [startedAt, setStartedAt] = useState(getDefaultStartTime())
-  const [endedAt, setEndedAt] = useState(getDefaultEndTime())
+  const [startedAt, setStartedAt] = useState<Date>(getDefaultStartTime())
+  const [endedAt, setEndedAt] = useState<Date>(getDefaultEndTime())
   const [note, setNote] = useState("")
   const [isRunning, setIsRunning] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -110,9 +100,7 @@ export const AddEntryDialog = ({ open, onOpenChange }: AddEntryDialogProps) => {
   const duration = (() => {
     if (isRunning || !endedAt) return null
 
-    const start = new Date(startedAt)
-    const end = new Date(endedAt)
-    const diff = end.getTime() - start.getTime()
+    const diff = endedAt.getTime() - startedAt.getTime()
 
     return diff > 0 ? diff : null
   })()
@@ -138,9 +126,7 @@ export const AddEntryDialog = ({ open, onOpenChange }: AddEntryDialogProps) => {
     }
 
     if (!isRunning && endedAt) {
-      const start = new Date(startedAt)
-      const end = new Date(endedAt)
-      if (end <= start) {
+      if (endedAt <= startedAt) {
         setError("End time must be after start time")
         return
       }
@@ -149,8 +135,8 @@ export const AddEntryDialog = ({ open, onOpenChange }: AddEntryDialogProps) => {
     createEntry.mutate(
       {
         project,
-        startedAt,
-        endedAt: isRunning ? undefined : endedAt,
+        startedAt: formatToDateTimeLocal(startedAt),
+        endedAt: isRunning ? undefined : formatToDateTimeLocal(endedAt),
         note: note || undefined,
       },
       {
@@ -196,15 +182,13 @@ export const AddEntryDialog = ({ open, onOpenChange }: AddEntryDialogProps) => {
           </div>
 
           <div className="grid gap-2">
-            <label htmlFor="startedAt" className="text-sm font-medium">
+            <label className="text-sm font-medium">
               Start Time <span className="text-destructive">*</span>
             </label>
-            <Input
-              id="startedAt"
-              type="datetime-local"
+            <DateTimePicker
               value={startedAt}
-              onChange={(e) => setStartedAt(e.target.value)}
-              required
+              onChange={(date) => date && setStartedAt(date)}
+              placeholder="Select start time"
             />
           </div>
 
@@ -225,15 +209,14 @@ export const AddEntryDialog = ({ open, onOpenChange }: AddEntryDialogProps) => {
 
           {!isRunning && (
             <div className="grid gap-2">
-              <label htmlFor="endedAt" className="text-sm font-medium">
+              <label className="text-sm font-medium">
                 End Time <span className="text-destructive">*</span>
               </label>
-              <Input
-                id="endedAt"
-                type="datetime-local"
+              <DateTimePicker
                 value={endedAt}
-                onChange={(e) => setEndedAt(e.target.value)}
-                required={!isRunning}
+                onChange={(date) => date && setEndedAt(date)}
+                minDate={startedAt}
+                placeholder="Select end time"
               />
             </div>
           )}
