@@ -6,6 +6,7 @@ import {
     useDeleteTimeEntry,
 } from "../hooks/useTimeEntries"
 import { useProjects } from "../hooks/useProjects"
+import { useDateGroupedEntries } from "../hooks/useDateGroupedEntries"
 import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
 import {
@@ -76,39 +77,10 @@ export const ProjectEntriesPage = () => {
     }
 
     // Date grouping logic
-    const groupedEntries = useMemo(() => {
-        const groups: Record<string, TimeEntry[]> = {}
-        const entries = entriesData?.data || []
-
-        entries.forEach((entry) => {
-            const date = new Date(entry.startedAt).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-            })
-
-            if (!groups[date]) groups[date] = []
-            groups[date].push(entry)
-        })
-
-        // Sort entries within each group by startedAt (newest first)
-        Object.keys(groups).forEach((date) => {
-            groups[date].sort(
-                (a, b) =>
-                    new Date(b.startedAt).getTime() -
-                    new Date(a.startedAt).getTime()
-            )
-        })
-
-        return groups
-    }, [entriesData])
-
-    // Sorted dates (newest first)
-    const sortedDates = useMemo(() => {
-        return Object.keys(groupedEntries).sort(
-            (a, b) => new Date(b).getTime() - new Date(a).getTime()
-        )
-    }, [groupedEntries])
+    const { groupedEntries, sortedDates } = useDateGroupedEntries({
+        entries: entriesData?.data || [],
+        sortOrder: 'desc',
+    })
 
     // Calculate total time for the project
     const totalDuration = useMemo(() => {
