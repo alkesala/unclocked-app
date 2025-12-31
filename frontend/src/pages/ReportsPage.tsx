@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Trash2 } from "lucide-react"
+import { Trash2, Eye } from "lucide-react"
 import { useReports, useDeleteReport } from "../hooks/useReports"
 import { useProjects } from "../hooks/useProjects"
 import { Button } from "../components/ui/button"
@@ -23,11 +23,13 @@ import {
   AlertDialogTitle,
 } from "../components/ui/alert-dialog"
 import { CreateReportDialog } from "../components/CreateReportDialog"
+import { ViewReportDialog } from "../components/ViewReportDialog"
 import { formatCurrency, formatDuration } from "../lib/utils"
 
 export const ReportsPage = () => {
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
   const [deleteReportId, setDeleteReportId] = useState<string | null>(null)
+  const [viewReportId, setViewReportId] = useState<string | null>(null)
 
   const { data: reportsData, isLoading } = useReports()
   const { data: projectsData } = useProjects()
@@ -131,6 +133,13 @@ export const ReportsPage = () => {
                       <Button
                         variant="ghost"
                         size="sm"
+                        onClick={() => setViewReportId(report.id)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         onClick={() => setDeleteReportId(report.id)}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -147,6 +156,12 @@ export const ReportsPage = () => {
       <CreateReportDialog
         open={createDialogOpen}
         onOpenChange={setCreateDialogOpen}
+      />
+
+      <ViewReportDialog
+        reportId={viewReportId}
+        open={!!viewReportId}
+        onOpenChange={(open) => !open && setViewReportId(null)}
       />
 
       <AlertDialog
