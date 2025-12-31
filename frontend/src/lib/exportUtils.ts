@@ -145,7 +145,6 @@ export const exportToPDF = async (data: ReportDetails): Promise<void> => {
     .filter((entry) => entry.endedAt) // Only include completed entries
     .map((entry) => {
       const startDate = new Date(entry.startedAt)
-      const endDate = new Date(entry.endedAt!)
 
       const durationMs = calculateDuration(entry.startedAt, entry.endedAt!)
       const durationHours = msToHours(durationMs)
@@ -210,10 +209,7 @@ export const exportToJSON = (data: ReportDetails): void => {
 
   // Build JSON structure with calculated fields
   const enrichedEntries = timeEntries.map((entry) => {
-    const startDate = new Date(entry.startedAt)
-    const endDate = entry.endedAt ? new Date(entry.endedAt) : null
-
-    if (!endDate) {
+    if (!entry.endedAt) {
       return {
         ...entry,
         duration: null,
