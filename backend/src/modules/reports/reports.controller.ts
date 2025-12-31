@@ -49,6 +49,35 @@ const getReports = async (
     }
 }
 
+const getReportDetails = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    const { id } = req.params
+    try {
+        if (!req.accountId) {
+            res.status(StatusCodes.UNAUTHORIZED).json({
+                error: "Unauthorized",
+            })
+            return
+        }
+        const result = await ReportService.getReportDetailsById(
+            id,
+            req.accountId
+        )
+        if (!result) {
+            res.status(StatusCodes.NOT_FOUND).json({
+                error: "Report not found",
+            })
+            return
+        }
+        res.status(StatusCodes.OK).json(result)
+    } catch (err) {
+        next(err)
+    }
+}
+
 const deleteReportById = async (
     req: Request<{ id: string }>,
     res: Response,
@@ -82,4 +111,5 @@ export const ReportController = {
     createReport,
     deleteReportById,
     getReports,
+    getReportDetails,
 }
