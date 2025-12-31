@@ -1,6 +1,7 @@
 import type { ReportDetails } from '../api/reports'
 import { formatDuration, formatTime } from './utils'
 import { format } from 'date-fns'
+import { calculateDuration, msToHours, getEffectiveHourlyRate, calculateEntryEarnings } from './calculations'
 
 /**
  * Sanitize filename by replacing non-alphanumeric characters with underscores
@@ -76,10 +77,10 @@ export const exportToCSV = (data: ReportDetails): void => {
 
     if (!endDate) return // Skip running entries
 
-    const durationMs = endDate.getTime() - startDate.getTime()
-    const durationHours = durationMs / (1000 * 60 * 60)
-    const rate = entry.hourlyRate ?? report.project.hourlyRate ?? 0
-    const earnings = durationHours * rate
+    const durationMs = calculateDuration(entry.startedAt, entry.endedAt!)
+    const durationHours = msToHours(durationMs)
+    const rate = getEffectiveHourlyRate(entry, report.project)
+    const earnings = calculateEntryEarnings(entry, report.project)
 
     totalHours += durationHours
     totalEarnings += earnings
@@ -146,10 +147,10 @@ export const exportToPDF = async (data: ReportDetails): Promise<void> => {
       const startDate = new Date(entry.startedAt)
       const endDate = new Date(entry.endedAt!)
 
-      const durationMs = endDate.getTime() - startDate.getTime()
-      const durationHours = durationMs / (1000 * 60 * 60)
-      const rate = entry.hourlyRate ?? report.project.hourlyRate ?? 0
-      const earnings = durationHours * rate
+      const durationMs = calculateDuration(entry.startedAt, entry.endedAt!)
+      const durationHours = msToHours(durationMs)
+      const rate = getEffectiveHourlyRate(entry, report.project)
+      const earnings = calculateEntryEarnings(entry, report.project)
 
       totalHours += durationHours
       totalEarnings += earnings
@@ -217,16 +218,16 @@ export const exportToJSON = (data: ReportDetails): void => {
         ...entry,
         duration: null,
         durationHours: null,
-        rate: entry.hourlyRate ?? report.project.hourlyRate ?? 0,
+        rate: getEffectiveHourlyRate(entry, report.project),
         earnings: null,
         status: 'running',
       }
     }
 
-    const durationMs = endDate.getTime() - startDate.getTime()
-    const durationHours = durationMs / (1000 * 60 * 60)
-    const rate = entry.hourlyRate ?? report.project.hourlyRate ?? 0
-    const earnings = durationHours * rate
+    const durationMs = calculateDuration(entry.startedAt, entry.endedAt!)
+    const durationHours = msToHours(durationMs)
+    const rate = getEffectiveHourlyRate(entry, report.project)
+    const earnings = calculateEntryEarnings(entry, report.project)
 
     totalHours += durationHours
     totalEarnings += earnings
