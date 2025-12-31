@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
 } from "./ui/alert-dialog"
 import { formatDuration } from "../lib/utils"
+import { calculateEntryDuration } from "../lib/calculations"
 import { useProjects } from "../hooks/useProjects"
 import { useCreateTimeEntry, useEndTimeEntry, useDeleteTimeEntry, useTimeEntry } from "../hooks/useTimeEntries"
 
@@ -54,7 +55,7 @@ export const Timer = () => {
   useEffect(() => {
     if (runningEntry && !runningEntry.endedAt) {
       const startedAt = new Date(runningEntry.startedAt)
-      const elapsed = Date.now() - startedAt.getTime()
+      const elapsed = calculateEntryDuration(runningEntry)
       setMilliseconds(elapsed)
       setStartTime(startedAt)
       setSelectedProject(runningEntry.project)
