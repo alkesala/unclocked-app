@@ -24,6 +24,12 @@ const deleteReportByIdSchema = z.object({
   }),
 });
 
+const getReportByIdSchema = z.object({
+  params: z.object({
+    id: z.string().min(1, "Report ID is required"),
+  }),
+});
+
 export const ReportFilterSchema = PaginationQuerySchema.extend({
   project: objectId.optional(),
 });
@@ -32,6 +38,7 @@ export const ReportsValidator = {
   createReportSchema,
   getReportsSchema,
   deleteReportByIdSchema,
+  getReportByIdSchema,
 };
 
 // Type after Zod preprocessing (used by backend)
