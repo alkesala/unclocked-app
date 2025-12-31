@@ -5,6 +5,7 @@ import {
   createReport,
   deleteReport,
   getAllReports,
+  getReportDetails,
   type GetReportsParams,
 } from '../api/reports'
 
@@ -12,6 +13,15 @@ export const useReports = (params?: GetReportsParams) => {
   return useQuery({
     queryKey: ['reports', params],
     queryFn: () => getAllReports(params),
+  })
+}
+
+export const useReportDetails = (reportId: string | null) => {
+  return useQuery({
+    queryKey: ['reports', reportId, 'details'],
+    queryFn: () => getReportDetails(reportId!),
+    enabled: !!reportId,
+    staleTime: 5 * 60 * 1000, // 5 minutes - reports are immutable
   })
 }
 
