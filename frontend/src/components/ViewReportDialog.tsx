@@ -17,6 +17,7 @@ import {
   TableRow,
 } from './ui/table'
 import { useReportDetails } from '../hooks/useReports'
+import { useDateGroupedEntries } from '../hooks/useDateGroupedEntries'
 import { exportToCSV, exportToPDF, exportToJSON } from '../lib/exportUtils'
 import { formatDate, formatTime, formatDuration, formatCurrency } from '../lib/utils'
 import {
@@ -43,39 +44,10 @@ export const ViewReportDialog = ({
   const { data, isLoading, error } = useReportDetails(reportId)
 
   // Group entries by date
-  const groupedEntries = useMemo(() => {
-    if (!data) return {}
-
-    const groups: Record<string, TimeEntry[]> = {}
-
-    data.timeEntries.forEach((entry) => {
-      const date = new Date(entry.startedAt).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
-
-      if (!groups[date]) groups[date] = []
-      groups[date].push(entry)
-    })
-
-    // Sort entries within each group by startedAt (newest first)
-    Object.keys(groups).forEach((date) => {
-      groups[date].sort(
-        (a, b) =>
-          new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime()
-      )
-    })
-
-    return groups
-  }, [data])
-
-  // Sorted dates (newest first)
-  const sortedDates = useMemo(() => {
-    return Object.keys(groupedEntries).sort(
-      (a, b) => new Date(b).getTime() - new Date(a).getTime()
-    )
-  }, [groupedEntries])
+  const { groupedEntries, sortedDates } = useDateGroupedEntries({
+    entries: data?.timeEntries || [],
+    sortOrder: 'desc',
+  })
 
   const handleExport = async (
     format: 'csv' | 'pdf' | 'json',
