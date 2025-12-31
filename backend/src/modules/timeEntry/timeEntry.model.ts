@@ -36,10 +36,10 @@ export const TimeEntryModel = model<ITimeEntry>("TimeEntry", TimeEntrySchema)
 interface ITimeEntry {
     readonly account: Types.ObjectId
     startedAt: Date
-    endedAt: Date
+    endedAt?: Date
     readonly project: Types.ObjectId
     note?: string
-    hourlyRate: number
+    hourlyRate?: number
     readonly createdAt: Date
     readonly updatedAt: Date
 }
