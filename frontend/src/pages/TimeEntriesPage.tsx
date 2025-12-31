@@ -35,6 +35,7 @@ import {
 } from "../components/ui/alert-dialog"
 import { EditTimeEntryDialog } from "../components/EditTimeEntryDialog"
 import { CreateTimeEntryDialog } from "../components/CreateTimeEntryDialog"
+import { DateRangePicker } from "../components/DateRangePicker"
 import { formatDuration, formatTime } from "../lib/utils"
 import type { TimeEntry } from "../api/timeEntry"
 
@@ -46,8 +47,10 @@ export const TimeEntriesPage = () => {
 
   // Filter states
   const [selectedProject, setSelectedProject] = useState<string>("all")
-  const [dateRangeStart, setDateRangeStart] = useState<string>("")
-  const [dateRangeEnd, setDateRangeEnd] = useState<string>("")
+  const [dateRange, setDateRange] = useState<{
+    start: Date | undefined
+    end: Date | undefined
+  }>({ start: undefined, end: undefined })
   const [showRunning, setShowRunning] = useState<boolean | null>(null)
   const [searchQuery, setSearchQuery] = useState<string>("")
 
@@ -91,13 +94,13 @@ export const TimeEntriesPage = () => {
     }
 
     // Date range filter
-    if (dateRangeStart) {
-      const startDate = new Date(dateRangeStart)
+    if (dateRange.start) {
+      const startDate = new Date(dateRange.start)
       startDate.setHours(0, 0, 0, 0)
       filtered = filtered.filter((e) => new Date(e.startedAt) >= startDate)
     }
-    if (dateRangeEnd) {
-      const endDate = new Date(dateRangeEnd)
+    if (dateRange.end) {
+      const endDate = new Date(dateRange.end)
       endDate.setHours(23, 59, 59, 999)
       filtered = filtered.filter((e) => new Date(e.startedAt) <= endDate)
     }
@@ -121,8 +124,7 @@ export const TimeEntriesPage = () => {
   }, [
     entriesData,
     selectedProject,
-    dateRangeStart,
-    dateRangeEnd,
+    dateRange,
     showRunning,
     searchQuery,
   ])
@@ -189,7 +191,7 @@ export const TimeEntriesPage = () => {
       </div>
 
       {/* Filters Row */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         {/* Project Filter */}
         <Select value={selectedProject} onValueChange={setSelectedProject}>
           <SelectTrigger>
@@ -205,23 +207,19 @@ export const TimeEntriesPage = () => {
           </SelectContent>
         </Select>
 
-        {/* Start Date */}
-        <Input
-          type="date"
-          value={dateRangeStart}
-          onChange={(e) => setDateRangeStart(e.target.value)}
-          placeholder="Start Date"
-        />
+        {/* Date Range Picker */}
+        <div className="md:col-span-2">
+          <DateRangePicker
+            startDate={dateRange.start}
+            endDate={dateRange.end}
+            onRangeChange={setDateRange}
+            placeholder="Select date range"
+          />
+        </div>
+      </div>
 
-        {/* End Date */}
-        <Input
-          type="date"
-          value={dateRangeEnd}
-          onChange={(e) => setDateRangeEnd(e.target.value)}
-          placeholder="End Date"
-        />
-
-        {/* Running/Completed Toggle */}
+      {/* Running/Completed Filter */}
+      <div className="mb-6">
         <Select
           value={
             showRunning === null ? "all" : showRunning ? "running" : "completed"
@@ -230,7 +228,7 @@ export const TimeEntriesPage = () => {
             setShowRunning(val === "all" ? null : val === "running")
           }
         >
-          <SelectTrigger>
+          <SelectTrigger className="w-full md:w-64">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
