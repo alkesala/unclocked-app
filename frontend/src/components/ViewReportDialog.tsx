@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -27,7 +27,6 @@ import {
   calculateDuration,
 } from '../lib/calculations'
 import { FileText, FileDown, FileJson, Loader2 } from 'lucide-react'
-import type { TimeEntry } from '../api/timeEntry'
 
 interface ViewReportDialogProps {
   reportId: string | null
