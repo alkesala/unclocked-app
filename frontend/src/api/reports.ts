@@ -1,5 +1,6 @@
 import { api } from '../lib/api'
 import type { CreateReportPayload } from '@unclocked-app/shared'
+import type { TimeEntry } from './timeEntry'
 
 export interface Report {
   id: string
@@ -12,6 +13,19 @@ export interface Report {
   totalEarnings: number
   createdAt: string
   updatedAt: string
+}
+
+export interface ReportWithProject extends Omit<Report, 'project'> {
+  project: {
+    id: string
+    name: string
+    hourlyRate?: number
+  }
+}
+
+export interface ReportDetails {
+  report: ReportWithProject
+  timeEntries: TimeEntry[]
 }
 
 export interface GetReportsParams {
@@ -43,4 +57,9 @@ export const createReport = async (
 
 export const deleteReport = async (id: string): Promise<void> => {
   await api.delete(`/reports/${id}`)
+}
+
+export const getReportDetails = async (id: string): Promise<ReportDetails> => {
+  const response = await api.get(`/reports/${id}`)
+  return response.data
 }
