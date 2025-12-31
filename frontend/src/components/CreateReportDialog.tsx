@@ -18,6 +18,8 @@ import {
 } from "./ui/select"
 import { useCreateReport } from "../hooks/useReports"
 import { useProjects } from "../hooks/useProjects"
+import { DateRangePicker } from "./DateRangePicker"
+import { format } from "date-fns"
 
 interface CreateReportDialogProps {
   open: boolean
@@ -30,8 +32,10 @@ export const CreateReportDialog = ({
 }: CreateReportDialogProps) => {
   const [name, setName] = useState("")
   const [project, setProject] = useState("")
-  const [rangeStart, setRangeStart] = useState("")
-  const [rangeEnd, setRangeEnd] = useState("")
+  const [dateRange, setDateRange] = useState<{
+    start: Date | undefined
+    end: Date | undefined
+  }>({ start: undefined, end: undefined })
   const [error, setError] = useState<string | null>(null)
 
   const { data: projectsData } = useProjects()
@@ -42,8 +46,7 @@ export const CreateReportDialog = ({
     if (open) {
       setName("")
       setProject("")
-      setRangeStart("")
-      setRangeEnd("")
+      setDateRange({ start: undefined, end: undefined })
       setError(null)
     }
   }, [open])
@@ -63,14 +66,12 @@ export const CreateReportDialog = ({
       return
     }
 
-    if (!rangeStart || !rangeEnd) {
-      setError("Please select both start and end dates")
+    if (!dateRange.start || !dateRange.end) {
+      setError("Please select a date range")
       return
     }
 
-    const start = new Date(rangeStart)
-    const end = new Date(rangeEnd)
-    if (end <= start) {
+    if (dateRange.end <= dateRange.start) {
       setError("End date must be after start date")
       return
     }
@@ -79,8 +80,8 @@ export const CreateReportDialog = ({
       {
         name: name.trim(),
         project,
-        rangeStart,
-        rangeEnd,
+        rangeStart: format(dateRange.start, "yyyy-MM-dd"),
+        rangeEnd: format(dateRange.end, "yyyy-MM-dd"),
       },
       {
         onSuccess: () => {
@@ -138,28 +139,14 @@ export const CreateReportDialog = ({
           </div>
 
           <div className="grid gap-2">
-            <label htmlFor="rangeStart" className="text-sm font-medium">
-              Start Date <span className="text-destructive">*</span>
+            <label className="text-sm font-medium">
+              Date Range <span className="text-destructive">*</span>
             </label>
-            <Input
-              id="rangeStart"
-              type="date"
-              value={rangeStart}
-              onChange={(e) => setRangeStart(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="grid gap-2">
-            <label htmlFor="rangeEnd" className="text-sm font-medium">
-              End Date <span className="text-destructive">*</span>
-            </label>
-            <Input
-              id="rangeEnd"
-              type="date"
-              value={rangeEnd}
-              onChange={(e) => setRangeEnd(e.target.value)}
-              required
+            <DateRangePicker
+              startDate={dateRange.start}
+              endDate={dateRange.end}
+              onRangeChange={setDateRange}
+              placeholder="Select report date range"
             />
           </div>
 
