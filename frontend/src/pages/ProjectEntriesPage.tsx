@@ -28,6 +28,7 @@ import {
 } from "../components/ui/alert-dialog"
 import { EditTimeEntryDialog } from "../components/EditTimeEntryDialog"
 import { formatDuration, formatTime } from "../lib/utils"
+import { calculateTotalDuration, calculateEntryDuration } from "../lib/calculations"
 import type { TimeEntry } from "../api/timeEntry"
 
 export const ProjectEntriesPage = () => {
@@ -112,14 +113,7 @@ export const ProjectEntriesPage = () => {
     // Calculate total time for the project
     const totalDuration = useMemo(() => {
         const entries = entriesData?.data || []
-        return entries.reduce((sum, e) => {
-            if (!e.endedAt) return sum
-            return (
-                sum +
-                (new Date(e.endedAt).getTime() -
-                    new Date(e.startedAt).getTime())
-            )
-        }, 0)
+        return calculateTotalDuration(entries)
     }, [entriesData])
 
     if (isLoadingEntries || isLoadingProjects) {
@@ -209,14 +203,7 @@ export const ProjectEntriesPage = () => {
                 const isExpanded = expandedDates.has(date)
 
                 // Calculate total duration for the day
-                const dailyDuration = entries.reduce((sum, e) => {
-                    if (!e.endedAt) return sum
-                    return (
-                        sum +
-                        (new Date(e.endedAt).getTime() -
-                            new Date(e.startedAt).getTime())
-                    )
-                }, 0)
+                const dailyDuration = calculateTotalDuration(entries)
 
                 return (
                     <div key={date} className="border rounded-lg mb-4">
@@ -261,11 +248,7 @@ export const ProjectEntriesPage = () => {
                                     </TableHeader>
                                     <TableBody>
                                         {entries.map((entry) => {
-                                            const duration = entry.endedAt
-                                                ? new Date(entry.endedAt).getTime() -
-                                                  new Date(entry.startedAt).getTime()
-                                                : Date.now() -
-                                                  new Date(entry.startedAt).getTime()
+                                            const duration = calculateEntryDuration(entry)
 
                                             return (
                                                 <TableRow key={entry.id}>
