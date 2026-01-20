@@ -9,9 +9,10 @@ RUN corepack enable
 # Copy workspace configuration
 COPY package.json yarn.lock .yarnrc.yml ./
 
-# Copy workspace packages
+# Copy all workspace package.json files (required for yarn install --immutable)
 COPY shared/package.json ./shared/
 COPY frontend/package.json ./frontend/
+COPY backend/package.json ./backend/
 
 # Install dependencies
 RUN yarn install --immutable

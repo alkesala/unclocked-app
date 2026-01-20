@@ -9,9 +9,10 @@ RUN corepack enable
 # Copy workspace configuration
 COPY package.json yarn.lock .yarnrc.yml ./
 
-# Copy workspace packages
+# Copy all workspace package.json files (required for yarn install --immutable)
 COPY shared/package.json ./shared/
 COPY backend/package.json ./backend/
+COPY frontend/package.json ./frontend/
 
 # Install dependencies
 RUN yarn install --immutable
@@ -39,9 +40,10 @@ RUN addgroup -g 1001 -S nodejs && \
 # Copy workspace configuration
 COPY package.json yarn.lock .yarnrc.yml ./
 
-# Copy workspace packages for production install
+# Copy all workspace package.json files
 COPY shared/package.json ./shared/
 COPY backend/package.json ./backend/
+COPY frontend/package.json ./frontend/
 
 # Install production dependencies only
 RUN yarn workspaces focus backend --production
