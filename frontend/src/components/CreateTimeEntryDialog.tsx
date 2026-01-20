@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react"
 import {
   Dialog,
   DialogContent,
@@ -20,6 +19,8 @@ import { useCreateTimeEntry } from "../hooks/useTimeEntries"
 import { useProjects } from "../hooks/useProjects"
 import { formatToDateTimeLocal } from "../lib/utils"
 import { DateTimePicker } from "./DateTimePicker"
+import { useFormDialog } from "../hooks/useFormDialog"
+import { useDialogMutation } from "../hooks/useDialogMutation"
 
 interface CreateTimeEntryDialogProps {
   open: boolean
@@ -32,63 +33,49 @@ export const CreateTimeEntryDialog = ({
   onOpenChange,
   defaultProjectId,
 }: CreateTimeEntryDialogProps) => {
-  const [project, setProject] = useState(defaultProjectId || "")
-  const [startedAt, setStartedAt] = useState<Date>(new Date())
-  const [endedAt, setEndedAt] = useState<Date | undefined>(undefined)
-  const [note, setNote] = useState("")
-  const [isRunning, setIsRunning] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const { formState, updateField } = useFormDialog({
+    open,
+    defaultValues: () => ({
+      project: defaultProjectId || "",
+      startedAt: new Date(),
+      endedAt: undefined as Date | undefined,
+      note: "",
+      isRunning: false,
+    }),
+    dependencies: [defaultProjectId],
+  })
 
   const { data: projectsData } = useProjects()
   const createEntry = useCreateTimeEntry()
-
-  // Reset form when dialog opens or defaultProjectId changes
-  useEffect(() => {
-    if (open) {
-      setProject(defaultProjectId || "")
-      setStartedAt(new Date())
-      setEndedAt(undefined)
-      setNote("")
-      setIsRunning(false)
-      setError(null)
-    }
-  }, [open, defaultProjectId])
+  const { error, setError, clearError, isPending, handleMutate } = useDialogMutation({
+    mutation: createEntry,
+    onSuccess: () => onOpenChange(false),
+    defaultErrorMessage: "Failed to create entry",
+  })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setError(null)
+    clearError()
 
     // Validation
-    if (!project) {
+    if (!formState.project) {
       setError("Please select a project")
       return
     }
 
-    if (!isRunning && endedAt) {
-      if (endedAt <= startedAt) {
+    if (!formState.isRunning && formState.endedAt) {
+      if (formState.endedAt <= formState.startedAt) {
         setError("End time must be after start time")
         return
       }
     }
 
-    createEntry.mutate(
-      {
-        project,
-        startedAt: formatToDateTimeLocal(startedAt),
-        endedAt: isRunning ? undefined : endedAt ? formatToDateTimeLocal(endedAt) : undefined,
-        note: note || undefined,
-      },
-      {
-        onSuccess: () => {
-          onOpenChange(false)
-        },
-        onError: (err) => {
-          setError(
-            err instanceof Error ? err.message : "Failed to create entry"
-          )
-        },
-      }
-    )
+    handleMutate({
+      project: formState.project,
+      startedAt: formatToDateTimeLocal(formState.startedAt),
+      endedAt: formState.isRunning ? undefined : formState.endedAt ? formatToDateTimeLocal(formState.endedAt) : undefined,
+      note: formState.note || undefined,
+    })
   }
 
   return (
@@ -102,11 +89,15 @@ export const CreateTimeEntryDialog = ({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="grid gap-4 py-4">
+          {/* Project Selection */}
           <div className="grid gap-2">
             <label htmlFor="project" className="text-sm font-medium">
               Project <span className="text-destructive">*</span>
             </label>
-            <Select value={project} onValueChange={setProject}>
+            <Select
+              value={formState.project}
+              onValueChange={(value) => updateField("project", value)}
+            >
               <SelectTrigger id="project">
                 <SelectValue placeholder="Select a project" />
               </SelectTrigger>
@@ -120,46 +111,49 @@ export const CreateTimeEntryDialog = ({
             </Select>
           </div>
 
+          {/* Start Time */}
           <div className="grid gap-2">
-            <label className="text-sm font-medium">
+            <label htmlFor="startTime" className="text-sm font-medium">
               Start Time <span className="text-destructive">*</span>
             </label>
             <DateTimePicker
-              value={startedAt}
-              onChange={(date) => date && setStartedAt(date)}
+              value={formState.startedAt}
+              onChange={(date) => updateField("startedAt", date || new Date())}
               placeholder="Select start time"
             />
           </div>
 
+          {/* Running Checkbox */}
           <div className="grid gap-2">
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
                 id="isRunning"
-                checked={isRunning}
-                onChange={(e) => setIsRunning(e.target.checked)}
+                checked={formState.isRunning}
+                onChange={(e) => updateField("isRunning", e.target.checked)}
                 className="h-4 w-4 rounded border-gray-300"
               />
               <label htmlFor="isRunning" className="text-sm font-medium">
-                Currently running (no end time)
+                Timer is running (no end time)
               </label>
             </div>
           </div>
 
-          {!isRunning && (
+          {/* End Time - Only show if not running */}
+          {!formState.isRunning && (
             <div className="grid gap-2">
-              <label className="text-sm font-medium">
+              <label htmlFor="endTime" className="text-sm font-medium">
                 End Time
               </label>
               <DateTimePicker
-                value={endedAt}
-                onChange={setEndedAt}
-                minDate={startedAt}
+                value={formState.endedAt}
+                onChange={(date) => updateField("endedAt", date)}
                 placeholder="Select end time"
               />
             </div>
           )}
 
+          {/* Note */}
           <div className="grid gap-2">
             <label htmlFor="note" className="text-sm font-medium">
               Description (optional)
@@ -167,8 +161,8 @@ export const CreateTimeEntryDialog = ({
             <Input
               id="note"
               placeholder="What did you work on?"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
+              value={formState.note}
+              onChange={(e) => updateField("note", e.target.value)}
             />
           </div>
 
@@ -183,12 +177,12 @@ export const CreateTimeEntryDialog = ({
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              disabled={createEntry.isPending}
+              disabled={isPending}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={createEntry.isPending}>
-              {createEntry.isPending ? "Creating..." : "Create Entry"}
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Creating..." : "Create Entry"}
             </Button>
           </DialogFooter>
         </form>

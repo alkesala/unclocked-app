@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react"
 import {
   Dialog,
   DialogContent,
@@ -21,6 +20,8 @@ import { useProjects } from "../hooks/useProjects"
 import { formatToDateTimeLocal, isoToDate } from "../lib/utils"
 import type { TimeEntry } from "../api/timeEntry"
 import { DateTimePicker } from "./DateTimePicker"
+import { useFormDialog } from "../hooks/useFormDialog"
+import { useDialogMutation } from "../hooks/useDialogMutation"
 
 interface EditTimeEntryDialogProps {
   entry: TimeEntry
@@ -33,66 +34,52 @@ export const EditTimeEntryDialog = ({
   open,
   onOpenChange,
 }: EditTimeEntryDialogProps) => {
-  const [project, setProject] = useState(entry.project)
-  const [startedAt, setStartedAt] = useState<Date>(isoToDate(entry.startedAt))
-  const [endedAt, setEndedAt] = useState<Date | undefined>(
-    entry.endedAt ? isoToDate(entry.endedAt) : undefined
-  )
-  const [note, setNote] = useState(entry.note || "")
-  const [isRunning, setIsRunning] = useState(!entry.endedAt)
-  const [error, setError] = useState<string | null>(null)
+  const { formState, updateField } = useFormDialog({
+    open,
+    defaultValues: () => ({
+      project: entry.project,
+      startedAt: isoToDate(entry.startedAt),
+      endedAt: entry.endedAt ? isoToDate(entry.endedAt) : undefined,
+      note: entry.note || "",
+      isRunning: !entry.endedAt,
+    }),
+    dependencies: [entry],
+  })
 
   const { data: projectsData } = useProjects()
   const updateEntry = useUpdateTimeEntry()
-
-  // Reset form when entry changes
-  useEffect(() => {
-    setProject(entry.project)
-    setStartedAt(isoToDate(entry.startedAt))
-    setEndedAt(entry.endedAt ? isoToDate(entry.endedAt) : undefined)
-    setNote(entry.note || "")
-    setIsRunning(!entry.endedAt)
-    setError(null)
-  }, [entry])
+  const { error, setError, clearError, isPending, handleMutate } = useDialogMutation({
+    mutation: updateEntry,
+    onSuccess: () => onOpenChange(false),
+    defaultErrorMessage: "Failed to update entry",
+  })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setError(null)
+    clearError()
 
     // Validation
-    if (!project) {
+    if (!formState.project) {
       setError("Please select a project")
       return
     }
 
-    if (!isRunning && endedAt) {
-      if (endedAt <= startedAt) {
+    if (!formState.isRunning && formState.endedAt) {
+      if (formState.endedAt <= formState.startedAt) {
         setError("End time must be after start time")
         return
       }
     }
 
-    updateEntry.mutate(
-      {
-        id: entry.id,
-        data: {
-          project,
-          startedAt: formatToDateTimeLocal(startedAt),
-          endedAt: isRunning ? undefined : endedAt ? formatToDateTimeLocal(endedAt) : undefined,
-          note: note || undefined,
-        },
+    handleMutate({
+      id: entry.id,
+      data: {
+        project: formState.project,
+        startedAt: formatToDateTimeLocal(formState.startedAt),
+        endedAt: formState.isRunning ? undefined : formState.endedAt ? formatToDateTimeLocal(formState.endedAt) : undefined,
+        note: formState.note || undefined,
       },
-      {
-        onSuccess: () => {
-          onOpenChange(false)
-        },
-        onError: (err) => {
-          setError(
-            err instanceof Error ? err.message : "Failed to update entry"
-          )
-        },
-      }
-    )
+    })
   }
 
   return (
@@ -110,7 +97,7 @@ export const EditTimeEntryDialog = ({
             <label htmlFor="project" className="text-sm font-medium">
               Project <span className="text-destructive">*</span>
             </label>
-            <Select value={project} onValueChange={setProject}>
+            <Select value={formState.project} onValueChange={(value) => updateField("project", value)}>
               <SelectTrigger id="project">
                 <SelectValue placeholder="Select a project" />
               </SelectTrigger>
@@ -129,8 +116,8 @@ export const EditTimeEntryDialog = ({
               Start Time <span className="text-destructive">*</span>
             </label>
             <DateTimePicker
-              value={startedAt}
-              onChange={(date) => date && setStartedAt(date)}
+              value={formState.startedAt}
+              onChange={(date) => date && updateField("startedAt", date)}
               placeholder="Select start time"
             />
           </div>
@@ -140,8 +127,8 @@ export const EditTimeEntryDialog = ({
               <input
                 type="checkbox"
                 id="isRunning"
-                checked={isRunning}
-                onChange={(e) => setIsRunning(e.target.checked)}
+                checked={formState.isRunning}
+                onChange={(e) => updateField("isRunning", e.target.checked)}
                 className="h-4 w-4 rounded border-gray-300"
               />
               <label htmlFor="isRunning" className="text-sm font-medium">
@@ -150,15 +137,15 @@ export const EditTimeEntryDialog = ({
             </div>
           </div>
 
-          {!isRunning && (
+          {!formState.isRunning && (
             <div className="grid gap-2">
               <label className="text-sm font-medium">
                 End Time
               </label>
               <DateTimePicker
-                value={endedAt}
-                onChange={setEndedAt}
-                minDate={startedAt}
+                value={formState.endedAt}
+                onChange={(date) => updateField("endedAt", date)}
+                minDate={formState.startedAt}
                 placeholder="Select end time"
               />
             </div>
@@ -171,8 +158,8 @@ export const EditTimeEntryDialog = ({
             <Input
               id="note"
               placeholder="What did you work on?"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
+              value={formState.note}
+              onChange={(e) => updateField("note", e.target.value)}
             />
           </div>
 
@@ -187,12 +174,12 @@ export const EditTimeEntryDialog = ({
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              disabled={updateEntry.isPending}
+              disabled={isPending}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={updateEntry.isPending}>
-              {updateEntry.isPending ? "Updating..." : "Update Entry"}
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Updating..." : "Update Entry"}
             </Button>
           </DialogFooter>
         </form>

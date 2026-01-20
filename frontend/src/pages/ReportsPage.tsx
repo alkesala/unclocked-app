@@ -24,7 +24,7 @@ import {
 } from "../components/ui/alert-dialog"
 import { CreateReportDialog } from "../components/CreateReportDialog"
 import { ViewReportDialog } from "../components/ViewReportDialog"
-import { formatCurrency, formatDuration } from "../lib/utils"
+import { formatCurrency, formatDuration, formatDate } from "../lib/utils"
 
 export const ReportsPage = () => {
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
@@ -43,14 +43,6 @@ export const ReportsPage = () => {
         },
       })
     }
-  }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    })
   }
 
   const getProjectName = (projectId: string) => {

@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react"
 import {
   Dialog,
   DialogContent,
@@ -10,6 +9,8 @@ import {
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 import { useCreateProject } from "../hooks/useProjects"
+import { useFormDialog } from "../hooks/useFormDialog"
+import { useDialogMutation } from "../hooks/useDialogMutation"
 
 interface CreateProjectDialogProps {
   open: boolean
@@ -20,59 +21,45 @@ export const CreateProjectDialog = ({
   open,
   onOpenChange,
 }: CreateProjectDialogProps) => {
-  const [name, setName] = useState("")
-  const [description, setDescription] = useState("")
-  const [hourlyRate, setHourlyRate] = useState("0")
-  const [isActive, setIsActive] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { formState, updateField } = useFormDialog({
+    open,
+    defaultValues: {
+      name: "",
+      description: "",
+      hourlyRate: "0",
+      isActive: true,
+    },
+  })
 
   const createProject = useCreateProject()
-
-  // Reset form when dialog opens
-  useEffect(() => {
-    if (open) {
-      setName("")
-      setDescription("")
-      setHourlyRate("0")
-      setIsActive(true)
-      setError(null)
-    }
-  }, [open])
+  const { error, setError, clearError, isPending, handleMutate } = useDialogMutation({
+    mutation: createProject,
+    onSuccess: () => onOpenChange(false),
+    defaultErrorMessage: "Failed to create project",
+  })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setError(null)
+    clearError()
 
     // Validation
-    if (!name.trim()) {
+    if (!formState.name.trim()) {
       setError("Project name is required")
       return
     }
 
-    const rate = parseFloat(hourlyRate)
+    const rate = parseFloat(formState.hourlyRate)
     if (isNaN(rate) || rate < 0) {
       setError("Hourly rate must be a valid number")
       return
     }
 
-    createProject.mutate(
-      {
-        name: name.trim(),
-        description: description.trim() || undefined,
-        hourlyRate: rate,
-        isActive,
-      },
-      {
-        onSuccess: () => {
-          onOpenChange(false)
-        },
-        onError: (err) => {
-          setError(
-            err instanceof Error ? err.message : "Failed to create project"
-          )
-        },
-      }
-    )
+    handleMutate({
+      name: formState.name.trim(),
+      description: formState.description.trim() || undefined,
+      hourlyRate: rate,
+      isActive: formState.isActive,
+    })
   }
 
   return (
@@ -93,8 +80,8 @@ export const CreateProjectDialog = ({
             <Input
               id="name"
               placeholder="My Project"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={formState.name}
+              onChange={(e) => updateField("name", e.target.value)}
               required
             />
           </div>
@@ -106,8 +93,8 @@ export const CreateProjectDialog = ({
             <Input
               id="description"
               placeholder="Project description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={formState.description}
+              onChange={(e) => updateField("description", e.target.value)}
             />
           </div>
 
@@ -121,8 +108,8 @@ export const CreateProjectDialog = ({
               step="0.01"
               min="0"
               placeholder="0.00"
-              value={hourlyRate}
-              onChange={(e) => setHourlyRate(e.target.value)}
+              value={formState.hourlyRate}
+              onChange={(e) => updateField("hourlyRate", e.target.value)}
             />
           </div>
 
@@ -131,8 +118,8 @@ export const CreateProjectDialog = ({
               <input
                 type="checkbox"
                 id="isActive"
-                checked={isActive}
-                onChange={(e) => setIsActive(e.target.checked)}
+                checked={formState.isActive}
+                onChange={(e) => updateField("isActive", e.target.checked)}
                 className="h-4 w-4 rounded border-gray-300"
               />
               <label htmlFor="isActive" className="text-sm font-medium">
@@ -152,12 +139,12 @@ export const CreateProjectDialog = ({
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              disabled={createProject.isPending}
+              disabled={isPending}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={createProject.isPending}>
-              {createProject.isPending ? "Creating..." : "Create Project"}
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Creating..." : "Create Project"}
             </Button>
           </DialogFooter>
         </form>

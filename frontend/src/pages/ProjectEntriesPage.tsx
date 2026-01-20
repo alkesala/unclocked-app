@@ -6,6 +6,7 @@ import {
     useDeleteTimeEntry,
 } from "../hooks/useTimeEntries"
 import { useProjects } from "../hooks/useProjects"
+import { useDateGroupedEntries } from "../hooks/useDateGroupedEntries"
 import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
 import {
@@ -28,6 +29,7 @@ import {
 } from "../components/ui/alert-dialog"
 import { EditTimeEntryDialog } from "../components/EditTimeEntryDialog"
 import { formatDuration, formatTime } from "../lib/utils"
+import { calculateTotalDuration, calculateEntryDuration } from "../lib/calculations"
 import type { TimeEntry } from "../api/timeEntry"
 
 export const ProjectEntriesPage = () => {
@@ -75,51 +77,15 @@ export const ProjectEntriesPage = () => {
     }
 
     // Date grouping logic
-    const groupedEntries = useMemo(() => {
-        const groups: Record<string, TimeEntry[]> = {}
-        const entries = entriesData?.data || []
-
-        entries.forEach((entry) => {
-            const date = new Date(entry.startedAt).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-            })
-
-            if (!groups[date]) groups[date] = []
-            groups[date].push(entry)
-        })
-
-        // Sort entries within each group by startedAt (newest first)
-        Object.keys(groups).forEach((date) => {
-            groups[date].sort(
-                (a, b) =>
-                    new Date(b.startedAt).getTime() -
-                    new Date(a.startedAt).getTime()
-            )
-        })
-
-        return groups
-    }, [entriesData])
-
-    // Sorted dates (newest first)
-    const sortedDates = useMemo(() => {
-        return Object.keys(groupedEntries).sort(
-            (a, b) => new Date(b).getTime() - new Date(a).getTime()
-        )
-    }, [groupedEntries])
+    const { groupedEntries, sortedDates } = useDateGroupedEntries({
+        entries: entriesData?.data || [],
+        sortOrder: 'desc',
+    })
 
     // Calculate total time for the project
     const totalDuration = useMemo(() => {
         const entries = entriesData?.data || []
-        return entries.reduce((sum, e) => {
-            if (!e.endedAt) return sum
-            return (
-                sum +
-                (new Date(e.endedAt).getTime() -
-                    new Date(e.startedAt).getTime())
-            )
-        }, 0)
+        return calculateTotalDuration(entries)
     }, [entriesData])
 
     if (isLoadingEntries || isLoadingProjects) {
@@ -209,14 +175,7 @@ export const ProjectEntriesPage = () => {
                 const isExpanded = expandedDates.has(date)
 
                 // Calculate total duration for the day
-                const dailyDuration = entries.reduce((sum, e) => {
-                    if (!e.endedAt) return sum
-                    return (
-                        sum +
-                        (new Date(e.endedAt).getTime() -
-                            new Date(e.startedAt).getTime())
-                    )
-                }, 0)
+                const dailyDuration = calculateTotalDuration(entries)
 
                 return (
                     <div key={date} className="border rounded-lg mb-4">
@@ -261,11 +220,7 @@ export const ProjectEntriesPage = () => {
                                     </TableHeader>
                                     <TableBody>
                                         {entries.map((entry) => {
-                                            const duration = entry.endedAt
-                                                ? new Date(entry.endedAt).getTime() -
-                                                  new Date(entry.startedAt).getTime()
-                                                : Date.now() -
-                                                  new Date(entry.startedAt).getTime()
+                                            const duration = calculateEntryDuration(entry)
 
                                             return (
                                                 <TableRow key={entry.id}>
