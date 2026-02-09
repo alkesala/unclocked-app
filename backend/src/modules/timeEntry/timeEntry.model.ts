@@ -31,6 +31,12 @@ const TimeEntrySchema = new Schema<ITimeEntry>(
         },
     }
 )
+
+// Indexes for query optimization
+TimeEntrySchema.index({ account: 1 })
+TimeEntrySchema.index({ account: 1, project: 1 })
+TimeEntrySchema.index({ account: 1, project: 1, startedAt: 1 })
+
 export const TimeEntryModel = model<ITimeEntry>("TimeEntry", TimeEntrySchema)
 
 interface ITimeEntry {
