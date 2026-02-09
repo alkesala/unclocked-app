@@ -31,6 +31,10 @@ const ProjectSchema = new Schema<IProject>(
         },
     }
 )
+
+// Index for query optimization
+ProjectSchema.index({ account: 1 })
+
 export const ProjectModel = model<IProject>("Project", ProjectSchema)
 
 interface IProject {
